@@ -1,1 +1,1 @@
-![RoMaze Icon](PCAssets/Images/RoMazePluginIconVersionTwo.png)
+![RoMaze Icon](PCAssets/Images/Icons/RoMazePluginIconVersionTwo.png)
