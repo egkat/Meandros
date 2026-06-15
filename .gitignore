@@ -1,9 +1,3 @@
-# Project place file
-/RoMaze.rbxlx
-
-# Roblox Studio lock files
-/*.rbxlx.lock
-/*.rbxl.lock
-
-sourcemap.json
 Packages/
+node_modules/
+*.rbxm

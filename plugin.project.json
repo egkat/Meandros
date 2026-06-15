@@ -1,0 +1,15 @@
+{
+  "name": "RoMaze",
+  "tree": {
+    "$className": "Folder",
+    "Plugin": {
+      "$path": "src/Plugin"
+    },
+    "Packages": {
+      "$path": "Packages"
+    },
+    "Version": {
+      "$path": "Version.txt"
+    }
+  }
+}
