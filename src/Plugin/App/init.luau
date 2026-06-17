@@ -13,7 +13,7 @@ export type AppProps = {
 }
 
 local function App(props: AppProps)
-	local isActive, setIsActive = React.useState(false)
+	local guiEnabled, setGuiEnabled = React.useState(false)
 
 	return e(StudioPluginContext.Provider, { value = props.plugin }, {
 		Theme = e(Theme.Provider, nil, {
@@ -24,17 +24,16 @@ local function App(props: AppProps)
 					name = Constants.PLUGIN_NAME,
 					tooltip = Constants.TOOLBAR_TOOLTIP,
 					icon = Icons.RoMazePluginIcon.VersionTwo,
-					active = isActive,
+					active = guiEnabled,
 					onClick = function()
-						setIsActive(function(previousActivity)
-							return not previousActivity
+						setGuiEnabled(function(previousState)
+							return not previousState
 						end)
 					end,
 				}),
 			}),
 		}),
 	})
-
 end
 
 return App
