@@ -85,6 +85,8 @@ All UI is built with React (`jsdotlua/react` + `jsdotlua/react-roblox`). `Studio
 
 **Plan before multi-file changes**: For anything touching more than one file (a new generation algorithm, a new Studio component tree, a cross-cutting refactor), write a short plan first — expected behavior, affected files, how it'll be verified — before writing code. Single-file fixes and small tweaks don't need this.
 
+**Verify before calling it done**: After a behavior change, rebuild (`npm run watch` or the one-off `rojo build` command above), reload the plugin in Studio, and actually exercise the changed path (open the widget, run the generator, check the built maze) rather than relying on the build succeeding as a proxy for correctness.
+
 ## What to avoid
 
 - Don't edit `Packages/` — managed by Wally.
