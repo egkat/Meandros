@@ -83,6 +83,8 @@ All UI is built with React (`jsdotlua/react` + `jsdotlua/react-roblox`). `Studio
 
 **Commit messages**: Prefix with `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, or `test:` (e.g. `feat: add Kruskal maze generator`). Enforced by the `commit-msg` hook in `.githooks/` — run `git config core.hooksPath .githooks` once after cloning to enable it.
 
+**Plan before multi-file changes**: For anything touching more than one file (a new generation algorithm, a new Studio component tree, a cross-cutting refactor), write a short plan first — expected behavior, affected files, how it'll be verified — before writing code. Single-file fixes and small tweaks don't need this.
+
 ## What to avoid
 
 - Don't edit `Packages/` — managed by Wally.
