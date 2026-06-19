@@ -1,2 +1,0 @@
-lune run .lune/tests/square-grid-test.luau
-lune run .lune/tests/non-square-grid-test.luau
