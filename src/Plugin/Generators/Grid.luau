@@ -1,5 +1,5 @@
 --!strict
-local GridTypes = require(script.Parent.GridTypes)
+local GridTypes = require("./GridTypes")
 
 type Wall = GridTypes.Wall
 type Cell = GridTypes.Cell
@@ -57,8 +57,11 @@ function Grid.getCell(grid: { Cell }, configs: GridConfigs, row: number, column:
 	assert(typeof(configs.height) == "number", `Grid: Height must be a number`)
 	assert(typeof(row) == "number", `Grid: row must be a number`)
 	assert(typeof(column) == "number", `Grid: column must be a number`)
-	assert(column >= 1 and column <= configs.width, `Grid: Column accessed must be between 1 and maze width`)
-	assert(row >= 1 and row <= configs.height, `Grid: Row accessed must be between 1 and maze height`)
+
+	-- Check rather than assert as row/column = 0 possible for neighboring cells of cell on an edge
+	if column < 1 or column > configs.width or row < 1 or row > configs.height then
+		return nil
+	end
 
 	local cellIndex = (row - 1) * configs.width + column
 
@@ -107,25 +110,20 @@ end
 function Grid.removeWall(cellOne: Cell, cellTwo: Cell, direction: Wall)
 	assert(typeof(cellOne) == "table", `Grid: cell one must be a table`)
 	assert(typeof(cellTwo) == "table", `Grid: cell two must be a table`)
-    assert(typeof(direction) == "string", `Grid: direction must be a string`)
+	assert(typeof(direction) == "string", `Grid: direction must be a string`)
 
-    local oppositeDirection: Wall = OPPOSITE_MAPPING[direction]
+	local oppositeDirection: Wall = OPPOSITE_MAPPING[direction]
 
-    cellOne.walls[direction] = false
-    cellTwo.walls[oppositeDirection] = false
-
+	cellOne.walls[direction] = false
+	cellTwo.walls[oppositeDirection] = false
 end
 
 function Grid.setVisited(cell: Cell, state: boolean)
-	
 	cell.visited = state
-
 end
 
 function Grid.markVisited(cell: Cell)
-	
 	Grid.setVisited(cell, true)
-
 end
 
 return Grid
