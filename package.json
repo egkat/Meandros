@@ -2,7 +2,8 @@
   "name": "romaze",
   "version": "0.1.0",
   "scripts": {
-    "watch": "node tools/watch.js"
+    "watch": "node tools/watch.js",
+    "test": "node tools/test.js"
   },
   "dependencies": {
     "chokidar": "^5.0.0"
