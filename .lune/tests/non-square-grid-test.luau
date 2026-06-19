@@ -36,4 +36,4 @@ assert(#bottomLeftNeighbors == 2, `[non-square-grid-test]: bottom-left should ha
 assert(#bottomRightNeighbors == 2, `[non-square-grid-test]: bottom-right should have exactly 2 neighbors`)
 assert(#randomCellNeighbors == 4, `[non-square-grid-test]: interior cell should have exactly 4 neighbors`)
 
-print("[non-square-grid-test]: All Non-Square Grid Tests Pass!")
+print(`[non-square-grid-test]: All {CONFIGS.width}x{CONFIGS.height} Non Square Grid Tests Pass!`)

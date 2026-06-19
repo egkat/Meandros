@@ -60,4 +60,4 @@ assert(#bottomLeftNeighbors == 2, `[nxn-grid-test]: bottom-left should have exac
 assert(#bottomRightNeighbors == 2, `[nxn-grid-test]: bottom-right should have exactly 2 neighbors`)
 assert(#randomCellNeighbors == 4, `[nxn-grid-test]: interior cell should have exactly 4 neighbors`)
 
-print("[nxn-grid-test]:: All Square Grid Tests Pass!")
+print(`[nxn-grid-test]:: All {width}x{height} Grid Tests Pass!`)

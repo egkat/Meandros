@@ -36,4 +36,4 @@ assert(#bottomLeftNeighbors == 2, `[square-grid-test]: bottom-left should have e
 assert(#bottomRightNeighbors == 2, `[square-grid-test]: bottom-right should have exactly 2 neighbors`)
 assert(#randomCellNeighbors == 4, `[square-grid-test]: interior cell should have exactly 4 neighbors`)
 
-print("[square-grid-test]: All Square Grid Tests Pass!")
+print(`[square-grid-test]: All {CONFIGS.width}x{CONFIGS.height} Square Grid Tests Pass!`)
