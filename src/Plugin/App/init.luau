@@ -18,14 +18,14 @@ export type AppProps = {
 }
 
 local AppStatus = Strict("AppStatus", {
-	Generation = "Generation",
+	Structure = "Structure",
 	Appearance = "Appearance",
 	Settings = "Settings",
 })
 
 local function App(props: AppProps)
 	local guiEnabled, setGuiEnabled = React.useState(false)
-	local appStatus, setAppStatus = React.useState("Generation")
+	local appStatus, setAppStatus = React.useState(AppStatus.Structure)
 
 	local function createPage(_appStatus, extraProps)
 		
@@ -66,7 +66,7 @@ local function App(props: AppProps)
 					setGuiEnabled(false)
 				end,
 			}, {
-				GenerationPage = createPage(AppStatus.Generation)
+				StructurePage = createPage(AppStatus.Structure)
 			}),
 		}),
 	})
