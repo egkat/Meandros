@@ -1,3 +1,4 @@
+local Icons = require(script.Parent.Parent.Parent.Parent.Assets.Icons)
 local Constants = require(script.Parent.Parent.Parent.Parent.Data.Constants)
 local React = require(script.Parent.Parent.Parent.Parent.Parent.Packages.React)
 local Theme = require(script.Parent.Parent.Parent.Theme)
@@ -11,11 +12,11 @@ export type SidebarProps = {
 }
 
 local SIDEBAR_BUTTON_CONFIGS = {
-	{ id = "Home", label = "Home", color = Color3.fromRGB(59, 130, 246) },
-	{ id = "Structure", label = "Structure", color = Color3.fromRGB(34, 197, 94) },
-	{ id = "Appearance", label = "Appearance",  color = Color3.fromRGB(168, 85, 247) },
-	{ id = "Build", label = "Build",  color = Color3.fromRGB(249, 115, 22) },
-	{ id = "Settings", label = "Settings", color = Color3.fromRGB(107, 114, 128) },
+	{ id = "Home", label = "Home", color = Color3.fromRGB(59, 130, 246), icon = Icons.RoMazePluginIcon.VersionOne },
+	{ id = "Structure", label = "Structure", color = Color3.fromRGB(34, 197, 94), icon = Icons.SidebarIcons.Structure },
+	{ id = "Appearance", label = "Appearance",  color = Color3.fromRGB(168, 85, 247), icon = Icons.SidebarIcons.Appearance},
+	{ id = "Build", label = "Build",  color = Color3.fromRGB(249, 115, 22), icon = Icons.SidebarIcons.Build},
+	{ id = "Settings", label = "Settings", color = Color3.fromRGB(107, 114, 128), icon = Icons.SidebarIcons.Settings },
 }
 local function Sidebar(props: SidebarProps)
 	local theme = Theme.useTheme()
@@ -37,6 +38,7 @@ local function Sidebar(props: SidebarProps)
 			active = props.activeStatus == item.id,
 			layoutOrder = index,
             color = item.color,
+            icon = item.icon,
 			onClick = function()
 				props.onSelect(item.id)
 			end,

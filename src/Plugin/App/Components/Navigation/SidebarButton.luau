@@ -6,9 +6,9 @@ local TextLabel = require(script.Parent.Parent.PrimitiveComponents.TextLabel)
 local e = React.createElement
 
 export type SidebarButtonProps = {
-	icon: string,
 	active: boolean,
 	label: string,
+	icon: string,
 	color: Color3,
 	layoutOrder: number,
 	onClick: () -> (),
@@ -45,6 +45,17 @@ local function SidebarButton(props: SidebarButtonProps)
 			BackgroundTransparency = transparency,
 			BackgroundColor3 = props.color,
 		}, {
+
+            Icon = e("ImageLabel", {
+                Size = UDim2.fromOffset(35, 35),
+                Position = UDim2.fromScale(0.5, 0.5),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Image = props.icon,
+                BackgroundTransparency = 1,
+                BorderSizePixel = 0,
+                ZIndex = 1,
+            }),
+
 			Caption = e(TextLabel, {
 				Size = UDim2.new(1, -6, 0, 24),
 				Position = UDim2.new(0.5, 0, 1, -2),
@@ -57,6 +68,7 @@ local function SidebarButton(props: SidebarButtonProps)
 					Thickness = 1,
 					Transparency = 0,
 				},
+                ZIndex = 2,
 			}),
 
 			UIStroke = e("UIStroke", {
