@@ -1,8 +1,10 @@
+local AppearanceSlice = require(script.AppearanceSlice)
 local Dropdown = require(script.Parent.Parent.Components.PrimitiveComponents.Dropdown)
 local TextLabel = require(script.Parent.Parent.Components.PrimitiveComponents.TextLabel)
 local Icons = require(script.Parent.Parent.Parent.Assets.Icons)
 local Constants = require(script.Parent.Parent.Parent.Data.Constants)
 local React = require(script.Parent.Parent.Parent.Parent.Packages.React)
+local ReactCharm = require(script.Parent.Parent.Parent.Parent.Packages.ReactCharm)
 local Theme = require(script.Parent.Parent.Theme)
 
 local e = React.createElement
@@ -13,7 +15,7 @@ export type AppearanceProps = {
 
 local function Appearance(props: AppearanceProps)
 	local theme = Theme.useTheme()
-	local testMaterial, setTestMaterial = React.useState(nil :: string?)
+	local selectedPartMaterial = ReactCharm.useAtom(AppearanceSlice.state.selectedPartMaterial)
 
 	return e(React.Fragment, nil, {
 
@@ -155,8 +157,8 @@ local function Appearance(props: AppearanceProps)
 								Size = UDim2.new(1, -10, 0, 28),
 								placeholderOption = "Material",
 								dropdownOptions = Constants.MATERIALS,
-								active = testMaterial,
-								onSelect = setTestMaterial,
+								active = selectedPartMaterial,
+								onSelect = AppearanceSlice.actions.setSelectedPartMaterial,
 							}),
 						}),
 					}),
