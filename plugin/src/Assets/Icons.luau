@@ -29,6 +29,10 @@ return {
 		Placeholder = "rbxassetid://87885814698504",
 	},
 
+	OtherIcons = {
+		ColorWheelCursor = "rbxassetid://103446896981001",
+	},
+
 	SidebarIcons = {
 		Home = "rbxassetid://81339367783155",
 		Structure = "rbxassetid://128461297434939",

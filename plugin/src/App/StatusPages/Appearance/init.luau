@@ -249,6 +249,9 @@ local function Appearance(props: AppearanceProps)
 								Position = UDim2.new(0.5, 23, 0, 110),
 								AnchorPoint = Vector2.new(0.5, 0.5),
 								GroupTransparency = transparency,
+								Visible = transparency:map(function(currentTransparency: number)
+									return currentTransparency < 1
+								end),
 								BackgroundTransparency = 1,
 							}, {
 								BackgroundFrame = e("Frame", {
@@ -304,6 +307,36 @@ local function Appearance(props: AppearanceProps)
 										AnchorPoint = Vector2.new(0.5, 1),
 										BackgroundTransparency = 1,
 										BorderSizePixel = 0,
+									}, {
+
+										InsetFrame = e("Frame", {
+											Size = UDim2.new(1, -10, 1, -10),
+											Position = UDim2.fromScale(0.5, 0.5),
+											AnchorPoint = Vector2.new(0.5, 0.5),
+											BackgroundTransparency = 1,
+											BorderSizePixel = 0,
+										}, {
+											LeftFrame = e("Frame", {
+												Position = UDim2.fromScale(0, 0.5),
+												AnchorPoint = Vector2.new(0, 0.5),
+												Size = UDim2.fromOffset(118, 118),
+												BackgroundTransparency = 1,
+												BorderSizePixel = 0,
+											}, {
+												ColorWheel = e(ColorWheel, {
+													Size = 118,
+													ResolutionMultiplier = 4,
+													selectedColor = selectedPartColor,
+													onColorChanged = AppearanceSlice.actions.setSelectedPartColor,
+												}),
+											}),
+										}),
+
+										-- LeftFrame = e("Frame", {
+										-- 	Position = UDim2.fromScale(0, 0.5),
+										-- 	AnchorPoint = Vector2.new(0, 0.5),
+										-- 	Size = UDim2.fromOffset(125, 125),
+										-- })
 									}),
 									UIGradient = e("UIGradient", {
 										Rotation = 90,
