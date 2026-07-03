@@ -11,7 +11,7 @@ if ! echo "$message" | grep -qE "$pattern"; then
   exit 1
 fi
 
-version_file="Version.txt"
+version_file="plugin/Version.txt"
 if git rev-parse --verify HEAD >/dev/null 2>&1 && git cat-file -e "HEAD:$version_file" 2>/dev/null; then
   old_version=$(git show "HEAD:$version_file" | tr -d '[:space:]')
   new_version=$(git show ":$version_file" 2>/dev/null | tr -d '[:space:]')

@@ -3,13 +3,13 @@
   "tree": {
     "$className": "Folder",
     "Plugin": {
-      "$path": "src/Plugin"
+      "$path": "plugin/src"
     },
     "Packages": {
-      "$path": "Packages"
+      "$path": "plugin/Packages"
     },
     "Version": {
-      "$path": "Version.txt"
+      "$path": "plugin/Version.txt"
     }
   }
 }

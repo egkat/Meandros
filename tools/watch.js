@@ -15,7 +15,7 @@ function build() {
 
 build();
 
-chokidar.watch(["src", "Packages", "Version.txt"], { ignoreInitial: true }).on("all", (event, path) => {
+chokidar.watch(["plugin"], { ignoreInitial: true }).on("all", (event, path) => {
   console.log(`🔄 ${path} changed...`);
   build();
 });

@@ -1,6 +1,9 @@
 local AppearanceSlice = require(script.AppearanceSlice)
+local ColorWheel = require(script.Components.ColorWheel)
+local Button = require(script.Parent.Parent.Components.PrimitiveComponents.Button)
 local Dropdown = require(script.Parent.Parent.Components.PrimitiveComponents.Dropdown)
 local TextLabel = require(script.Parent.Parent.Components.PrimitiveComponents.TextLabel)
+local useSpring = require(script.Parent.Parent.Hooks.useSpring)
 local Icons = require(script.Parent.Parent.Parent.Assets.Icons)
 local Constants = require(script.Parent.Parent.Parent.Data.Constants)
 local React = require(script.Parent.Parent.Parent.Parent.Packages.React)
@@ -18,6 +21,13 @@ local function Appearance(props: AppearanceProps)
 	local theme = Theme.useTheme()
 	local selectedPartMaterial = ReactCharm.useAtom(AppearanceSlice.state.selectedPartMaterial)
 	local selectedPartColor = ReactCharm.useAtom(AppearanceSlice.state.selectedPartColor)
+	local colorWheelOpen, setColorWheelOpen = React.useState(false)
+
+	local transparency, transparencySpring = useSpring(1)
+
+	React.useEffect(function()
+		transparencySpring:setGoal(colorWheelOpen and 0 or 1)
+	end, { colorWheelOpen })
 
 	return e(React.Fragment, nil, {
 
@@ -112,7 +122,7 @@ local function Appearance(props: AppearanceProps)
 					LeftFrame = e("Frame", {
 						AnchorPoint = Vector2.new(0, 0.5),
 						Position = UDim2.fromScale(0, 0.5),
-						Size = UDim2.fromScale(0.4, 1),
+						Size = UDim2.fromScale(0.485, 1),
 						BackgroundTransparency = 1,
 						BorderSizePixel = 0,
 					}, {
@@ -163,7 +173,7 @@ local function Appearance(props: AppearanceProps)
 								onSelect = AppearanceSlice.actions.setSelectedPartMaterial,
 							}),
 
-							ColorPickerFrame = e("Frame", {
+							ToggleColorPickerFrame = e("Frame", {
 								Position = UDim2.new(0.5, 0, 0, 80),
 								AnchorPoint = Vector2.new(0.5, 0),
 								Size = UDim2.new(1, -10, 0, 28),
@@ -181,21 +191,25 @@ local function Appearance(props: AppearanceProps)
 										ColorSequenceKeypoint.new(1, Color3.fromRGB(187, 187, 187)),
 									}),
 								}),
-								ColorButton = e("TextButton", {
+								ColorButton = e(Button, {
 									Size = UDim2.fromScale(1, 1),
 									Position = UDim2.fromScale(0.5, 0.5),
 									AnchorPoint = Vector2.new(0.5, 0.5),
 									BackgroundTransparency = 1,
 									BorderSizePixel = 0,
-									Text = "",
-									[React.Event.Activated] = function()
-										print("activated")
+									hoverScale = 1,
+									Activated = function()
+										setColorWheelOpen(function(oldState: boolean)
+											return not oldState
+										end)
 									end,
 								}, {
 									ColorLabelFrame = e("Frame", {
 										AnchorPoint = Vector2.new(0, 0.5),
 										Position = UDim2.fromScale(0, 0.5),
 										Size = UDim2.new(1, -30, 1, 0),
+										BackgroundTransparency = 1,
+										BorderSizePixel = 0,
 									}, {
 										ColorLabel = e(TextLabel, {
 											AnchorPoint = Vector2.new(0.5, 0.5),
@@ -217,27 +231,222 @@ local function Appearance(props: AppearanceProps)
 										ColorFrame = e("Frame", {
 											AnchorPoint = Vector2.new(0.5, 0.5),
 											Position = UDim2.fromScale(0.5, 0.5),
-											Size = UDim2.new(1, -5, 1, -5),
+											Size = UDim2.new(1, -10, 1, -10),
 											BackgroundColor3 = selectedPartColor,
 											BorderSizePixel = 0,
 										}, {
 											UIStroke = e("UIStroke", {
 												Thickness = 1,
-												Color = Color3.fromRGB(0, 0, 0),
+												Color = Color3.fromRGB(255, 255, 255),
 											}),
+										}),
+									}),
+								}),
+							}),
+
+							ColorWheelFrame = e("CanvasGroup", {
+								Size = UDim2.fromOffset(225, 150),
+								Position = UDim2.new(0.5, 23, 0, 110),
+								AnchorPoint = Vector2.new(0.5, 0.5),
+								GroupTransparency = transparency,
+								BackgroundTransparency = 1,
+							}, {
+								BackgroundFrame = e("Frame", {
+									Size = UDim2.new(1, -2, 1, -2),
+									Position = UDim2.fromScale(0.5, 0.5),
+									AnchorPoint = Vector2.new(0.5, 0.5),
+									BackgroundColor3 = theme.Background,
+									BorderSizePixel = 0,
+								}, {
+									UIStroke = e("UIStroke", {
+										Thickness = 1,
+										Color = Color3.fromRGB(0, 0, 0),
+									}),
+									TopFrame = e("Frame", {
+										Size = UDim2.new(1, 0, 0, 20),
+										Position = UDim2.fromScale(0.5, 0),
+										AnchorPoint = Vector2.new(0.5, 0),
+										BackgroundColor3 = theme.Background,
+										BorderSizePixel = 0,
+									}, {
+										InsetFrame = e("Frame", {
+											AnchorPoint = Vector2.new(0.5, 0.5),
+											Position = UDim2.fromScale(0.5, 0.5),
+											Size = UDim2.new(1, -10, 1, 0),
+											BackgroundTransparency = 1,
+											BorderSizePixel = 0,
+										}, {
+											ColorWheelLabel = e(TextLabel, {
+												AnchorPoint = Vector2.new(0, 0.5),
+												Position = UDim2.fromScale(0, 0.5),
+												Size = UDim2.fromScale(0.5, 1),
+												Text = "Color Wheel",
+												TextXAlignment = Enum.TextXAlignment.Left,
+												TextSize = 14,
+												Stroke = {
+													Color = Color3.fromRGB(0, 0, 0),
+													Thickness = 2,
+													Transparency = 0,
+												},
+												Gradient = {
+													Rotation = 90,
+													Color = ColorSequence.new({
+														ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+														ColorSequenceKeypoint.new(1, Color3.fromRGB(208, 208, 208)),
+													}),
+												},
+											}),
+										}),
+									}),
+									BottomFrame = e("Frame", {
+										Size = UDim2.new(1, 0, 1, -20),
+										Position = UDim2.fromScale(0.5, 1),
+										AnchorPoint = Vector2.new(0.5, 1),
+										BackgroundTransparency = 1,
+										BorderSizePixel = 0,
+									}),
+									UIGradient = e("UIGradient", {
+										Rotation = 90,
+										Color = ColorSequence.new({
+											ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+											ColorSequenceKeypoint.new(1, Color3.fromRGB(187, 187, 187)),
 										}),
 									}),
 								}),
 							}),
 						}),
 					}),
+
 					RightFrame = e("Frame", {
 						AnchorPoint = Vector2.new(1, 0.5),
 						Position = UDim2.fromScale(1, 0.5),
-						Size = UDim2.fromScale(0.5, 1),
+						Size = UDim2.fromScale(0.485, 1),
 						BackgroundTransparency = 1,
 						BorderSizePixel = 0,
+					}, {
+						TopFrame = e("Frame", {
+							Position = UDim2.fromScale(0.5, 0),
+							AnchorPoint = Vector2.new(0.5, 0),
+							Size = UDim2.new(1, 0, 0, 30),
+							BackgroundColor3 = Constants.PAGE_COLORS.APPEARANCE,
+							BorderSizePixel = 0,
+						}, {
+							UIStroke = e("UIStroke", {
+								Color = Color3.fromRGB(0, 0, 0),
+								Thickness = 1,
+							}),
+							UIGradient = e("UIGradient", {
+								Rotation = 90,
+								Color = ColorSequence.new({
+									ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+									ColorSequenceKeypoint.new(1, Color3.fromRGB(187, 187, 187)),
+								}),
+							}),
+							PartLabel = e(TextLabel, {
+								AnchorPoint = Vector2.new(0.5, 0.5),
+								Position = UDim2.fromScale(0.5, 0.5),
+								Size = UDim2.fromScale(1, 1),
+								Text = "Preview",
+								TextSize = 16,
+								Stroke = {
+									Color = Color3.fromRGB(0, 0, 0),
+									Thickness = 2,
+									Transparency = 0,
+								},
+								Gradient = {
+									Rotation = 90,
+									Color = ColorSequence.new({
+										ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+										ColorSequenceKeypoint.new(1, Color3.fromRGB(208, 208, 208)),
+									}),
+								},
+							}),
+						}),
 					}),
+
+					-- RightFrame = e(
+					-- 	"Frame",
+					-- 	{
+					-- 		AnchorPoint = Vector2.new(1, 0.5),
+					-- 		Position = UDim2.fromScale(1, 0.5),
+					-- 		Size = UDim2.fromScale(0.5, 1),
+					-- 		BackgroundTransparency = 1,
+					-- 		BorderSizePixel = 0,
+					-- 	},
+					-- 	if colorWheelOpen
+					-- 		then {
+					-- 			TopFrame = e("Frame", {
+					-- 				Position = UDim2.fromScale(0.5, 0),
+					-- 				AnchorPoint = Vector2.new(0.5, 0),
+					-- 				Size = UDim2.new(1, 0, 0, 30),
+					-- 				BackgroundColor3 = theme.Brand,
+					-- 				BorderSizePixel = 0,
+					-- 			}, {
+					-- 				UIStroke = e("UIStroke", {
+					-- 					Color = Color3.fromRGB(0, 0, 0),
+					-- 					Thickness = 1,
+					-- 				}),
+					-- 				UIGradient = e("UIGradient", {
+					-- 					Rotation = 90,
+					-- 					Color = ColorSequence.new({
+					-- 						ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+					-- 						ColorSequenceKeypoint.new(1, Color3.fromRGB(187, 187, 187)),
+					-- 					}),
+					-- 				}),
+					-- 				ColorWheelLabel = e(TextLabel, {
+					-- 					AnchorPoint = Vector2.new(0.5, 0.5),
+					-- 					Position = UDim2.fromScale(0.5, 0.5),
+					-- 					Size = UDim2.new(1, -28, 1, 0),
+					-- 					Text = "Color Wheel",
+					-- 					TextSize = 16,
+					-- 					Stroke = {
+					-- 						Color = Color3.fromRGB(0, 0, 0),
+					-- 						Thickness = 2,
+					-- 						Transparency = 0,
+					-- 					},
+					-- 					Gradient = {
+					-- 						Rotation = 90,
+					-- 						Color = ColorSequence.new({
+					-- 							ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+					-- 							ColorSequenceKeypoint.new(1, Color3.fromRGB(208, 208, 208)),
+					-- 						}),
+					-- 					},
+					-- 				}),
+					-- 				CloseButton = e(Button, {
+					-- 					Size = UDim2.fromOffset(20, 20),
+					-- 					Position = UDim2.new(1, -5, 0.5, 0),
+					-- 					AnchorPoint = Vector2.new(1, 0.5),
+					-- 					BackgroundTransparency = 1,
+					-- 					hoverScale = 1.15,
+					-- 					Activated = function()
+					-- 						setColorWheelOpen(false)
+					-- 					end,
+					-- 				}, {
+					-- 					CloseLabel = e(TextLabel, {
+					-- 						Size = UDim2.fromScale(1, 1),
+					-- 						Text = "X",
+					-- 						TextSize = 14,
+					-- 						TextColor3 = theme.Foreground,
+					-- 						TextXAlignment = Enum.TextXAlignment.Center,
+					-- 					}),
+					-- 				}),
+					-- 			}),
+
+					-- 			WheelFrame = e("Frame", {
+					-- 				Position = UDim2.new(0.5, 0, 0, 30),
+					-- 				AnchorPoint = Vector2.new(0.5, 0),
+					-- 				Size = UDim2.fromOffset(140, 140),
+					-- 				BackgroundTransparency = 1,
+					-- 				BorderSizePixel = 0,
+					-- 			}, {
+					-- 				ColorWheel = e(ColorWheel, {
+					-- 					Size = 140,
+					-- 					ResolutionMultiplier = 4,
+					-- 				}),
+					-- 			}),
+					-- 		}
+					-- 		else nil
+					-- ),
 				}),
 
 				-- TopFrame = e("Frame", {
