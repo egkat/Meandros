@@ -31,6 +31,7 @@ return {
 
 	OtherIcons = {
 		ColorWheelCursor = "rbxassetid://103446896981001",
+		Exit = "rbxassetid://109124020701948",
 	},
 
 	SidebarIcons = {

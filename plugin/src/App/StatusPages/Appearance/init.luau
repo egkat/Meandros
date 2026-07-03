@@ -274,11 +274,29 @@ local function Appearance(props: AppearanceProps)
 									}, {
 										InsetFrame = e("Frame", {
 											AnchorPoint = Vector2.new(0.5, 0.5),
-											Position = UDim2.fromScale(0.5, 0.5),
+											Position = UDim2.new(0.5, 5, 0.5, 0),
 											Size = UDim2.new(1, -10, 1, 0),
 											BackgroundTransparency = 1,
 											BorderSizePixel = 0,
 										}, {
+											ExitFrame = e("Frame", {
+												Size = UDim2.fromOffset(20, 20),
+												Position = UDim2.fromScale(1, 0.5),
+												AnchorPoint = Vector2.new(1, 0.5),
+												BackgroundTransparency = 1,
+												BorderSizePixel = 0,
+											}, {
+												ExitButton = e(Button, {
+													Image = Icons.OtherIcons.Exit,
+													Size = UDim2.fromScale(1, 1),
+													Position = UDim2.fromScale(0.5, 0.5),
+													AnchorPoint = Vector2.new(0.5, 0.5),
+													hoverScale = 1,
+													Activated = function() 
+														setColorWheelOpen(false)
+													end,
+												}),
+											}),
 											ColorWheelLabel = e(TextLabel, {
 												AnchorPoint = Vector2.new(0, 0.5),
 												Position = UDim2.fromScale(0, 0.5),
