@@ -10,6 +10,8 @@ Constants.WIDGET_MIN_SIZE = Vector2.new(360, 400)
 
 Constants.SIDEBAR_WIDTH = 50
 
+Constants.DEGREE_SYMBOL = utf8.char(0x00B0)
+
 Constants.PAGE_COLORS = {
 	HOME = Color3.fromRGB(59, 130, 246),
 	STRUCTURE = Color3.fromRGB(34, 197, 94),
