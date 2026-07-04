@@ -2,6 +2,7 @@ local useSpring = require(script.Parent.Parent.Parent.Hooks.useSpring)
 local React = require(script.Parent.Parent.Parent.Parent.Parent.Packages.React)
 local Theme = require(script.Parent.Parent.Parent.Theme)
 local Button = require(script.Parent.Button)
+local GetInvertedColor = require(script.Parent.Parent.Parent.Parent.Utils.GetInvertedColor)
 local TextLabel = require(script.Parent.TextLabel)
 
 local e = React.createElement
@@ -163,7 +164,10 @@ local function Dropdown(props: DropdownProps)
 				BackgroundColor3 = theme.Background,
 				BorderSizePixel = 0,
 			}, {
-				UIStroke = e("UIStroke", BEVEL_STROKE),
+				UIStroke = e("UIStroke", {
+					Color = GetInvertedColor(theme.Background),
+					Thickness = 1											
+				}),
 				UIGradient = e("UIGradient", BEVEL_GRADIENT),
 
 				Active = e(TextLabel, {

@@ -10,6 +10,7 @@ local React = require(script.Parent.Parent.Parent.Parent.Packages.React)
 local ReactCharm = require(script.Parent.Parent.Parent.Parent.Packages.ReactCharm)
 local FormatHSV = require(script.Parent.Parent.Parent.Utils.FormatHSV)
 local GetColorStringFromRGB = require(script.Parent.Parent.Parent.Utils.GetColorStringFromRGB)
+local GetInvertedColor = require(script.Parent.Parent.Parent.Utils.GetInvertedColor)
 local Theme = require(script.Parent.Parent.Theme)
 
 local e = React.createElement
@@ -23,8 +24,78 @@ local function Appearance(_props: AppearanceProps)
 	local selectedPartMaterial = ReactCharm.useAtom(AppearanceSlice.state.selectedPartMaterial)
 	local selectedPartColor = ReactCharm.useAtom(AppearanceSlice.state.selectedPartColor)
 	local colorWheelOpen, setColorWheelOpen = React.useState(false)
+	local viewportFrameRef = React.useRef(nil :: ViewportFrame?)
+	local viewportCameraRef = React.useRef(nil :: Camera?)
+	local viewportPartRef = React.useRef(nil :: BasePart?)
 
 	local transparency, transparencySpring = useSpring(1)
+
+	React.useEffect(function()
+
+		local function buildViewport(material: string, color: Color3, transparency: number?)
+
+			local t = 0
+			
+			local viewportPart = Instance.new("Part")
+
+			viewportPart.Size = Vector3.one * 4
+			viewportPart.Material = Enum.Material[material]
+			viewportPart.Color = color
+			viewportPart.Transparency = t
+
+			local viewportCamera = Instance.new("Camera")
+
+			viewportCamera.CFrame = CFrame.lookAt(viewportPart.Position + Vector3.new(0, 0, 5), viewportPart.Position)
+
+			viewportPartRef.current = viewportPart
+			viewportCameraRef.current = viewportCamera
+
+			viewportCamera.Parent = viewportFrameRef.current
+			viewportPart.Parent = viewportFrameRef.current
+
+			viewportFrameRef.current.CurrentCamera = viewportCamera
+
+		end
+		
+		local function updateViewport(material: string, color: Color3, transparency: number?)
+
+			local t = 0
+
+			local newMaterial = Enum.Material[material]
+			local newColor = color
+
+			if viewportPartRef.current.Material ~= newMaterial then
+				viewportPartRef.current.Material = newMaterial
+			end
+
+			if viewportPartRef.current.Color ~= newColor then
+				viewportPartRef.current.Color = newColor
+			end
+
+			viewportPartRef.current.Transparency = t
+
+		end
+
+		if viewportPartRef.current then
+			updateViewport(selectedPartMaterial, selectedPartColor)
+		else
+			buildViewport(selectedPartMaterial, selectedPartColor)
+		end
+
+	end, {selectedPartMaterial, selectedPartColor})
+
+	React.useEffect(function()
+		return function()
+			if viewportPartRef.current then
+				viewportPartRef.current:Destroy()
+				viewportPartRef.current = nil
+			end
+			if viewportCameraRef.current then
+				viewportCameraRef.current:Destroy()
+				viewportCameraRef.current = nil
+			end
+		end
+	end, {})
 
 	React.useEffect(function()
 		transparencySpring:setGoal(colorWheelOpen and 0 or 1)
@@ -183,7 +254,7 @@ local function Appearance(_props: AppearanceProps)
 							}, {
 								UIStroke = e("UIStroke", {
 									Thickness = 1,
-									Color = Color3.fromRGB(0, 0, 0),
+									Color = GetInvertedColor(theme.Background),
 								}),
 								UIGradient = e("UIGradient", {
 									Rotation = 90,
@@ -247,7 +318,7 @@ local function Appearance(_props: AppearanceProps)
 
 							ColorWheelFrame = e("CanvasGroup", {
 								Size = UDim2.fromOffset(250, 150),
-								Position = UDim2.new(0.5, 23, 0, 110),
+								Position = UDim2.new(0.5, 34, 0, 110),
 								AnchorPoint = Vector2.new(0.5, 0.5),
 								GroupTransparency = transparency,
 								Visible = transparency:map(function(currentTransparency: number)
@@ -342,12 +413,28 @@ local function Appearance(_props: AppearanceProps)
 												BackgroundTransparency = 1,
 												BorderSizePixel = 0,
 											}, {
+												ColorWheelBorder = e("Frame", {
+													Size = UDim2.fromOffset(118, 118),
+													AnchorPoint = Vector2.new(0.5, 0.5),
+													Position = UDim2.fromScale(0.5, 0.5),
+													BackgroundTransparency = 1,
+													BorderSizePixel = 0,
+													ZIndex = -1
+												}, {
+													UICorner = e("UICorner", {
+														CornerRadius = UDim.new(1, 0),
+													}),
+													UIStroke = e("UIStroke", {
+														Color = GetInvertedColor(theme.Background),
+														Thickness = 2,
+													}),
+												}),
 												ColorWheel = e(ColorWheel, {
 													Size = 118,
 													ResolutionMultiplier = 4,
 													selectedColor = selectedPartColor,
 													onColorChanged = AppearanceSlice.actions.setSelectedPartColor,
-													Active = colorWheelOpen
+													Active = colorWheelOpen,
 												}),
 											}),
 											RightFrame = e("Frame", {
@@ -465,7 +552,7 @@ local function Appearance(_props: AppearanceProps)
 								AnchorPoint = Vector2.new(0.5, 0.5),
 								Position = UDim2.fromScale(0.5, 0.5),
 								Size = UDim2.fromScale(1, 1),
-								Text = "Preview",
+								Text = "Part Preview",
 								TextSize = 16,
 								Stroke = {
 									Color = Color3.fromRGB(0, 0, 0),
@@ -481,6 +568,34 @@ local function Appearance(_props: AppearanceProps)
 								},
 							}),
 						}),
+						BottomFrame = e("Frame", {
+							Position = UDim2.fromScale(0.5, 1),
+							AnchorPoint = Vector2.new(0.5, 1),
+							Size = UDim2.new(1, 0, 1, -30),
+							BackgroundTransparency = 1,
+							BorderSizePixel = 0,
+						}, {
+							SquareFrame = e("Frame", {
+								Position = UDim2.fromScale(0.5, 0.5),
+								AnchorPoint = Vector2.new(0.5, 0.5),
+								Size = UDim2.fromOffset(125, 125),
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+							}, {
+								ViewportFrame = e("ViewportFrame", {			
+									Size = UDim2.fromScale(1, 1),
+									Position = UDim2.fromScale(0.5, 0.5),
+									AnchorPoint = Vector2.new(0.5, 0.5),
+									BackgroundTransparency = 1,
+									BorderSizePixel = 0,
+									ref = viewportFrameRef,
+								}),
+								UIStroke = e("UIStroke", {
+									Color = GetInvertedColor(theme.Background),
+									Thickness = 2,
+								})
+							})
+						})
 					}),
 				}),
 			}),

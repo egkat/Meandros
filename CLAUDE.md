@@ -5,24 +5,27 @@ A Roblox Studio plugin that generates mazes with configurable algorithms and set
 ## Toolchain
 
 Managed by [Rokit](https://github.com/rojo-rbx/rokit) (`rokit.toml`):
-- **rojo** — syncs `src/` into Roblox Studio and builds the plugin binary
+- **rojo** — syncs `plugin/src/` into Roblox Studio and builds the plugin binary
 - **wally** — Luau package manager
 - **wally-package-types** — generates Luau types for Wally packages
 
 ## Build & develop
 
 ```bash
-# Watch src/ and auto-rebuild the plugin on every file change
+# Watch plugin/ and auto-rebuild the plugin on every file change
 npm run watch
 
 # One-off build
 rojo build plugin.project.json --output ~/Documents/Roblox/Plugins/RoMaze.rbxm
 
+# Run the Lune test suite (.lune/tests)
+npm test
+
 # Install/update Wally packages
 wally install
 
 # Lint
-selene src/
+selene plugin/src/
 ```
 
 The watch script (`tools/watch.js`) builds into `~/Documents/Roblox/Plugins/RoMaze.rbxm`. Reload the plugin in Roblox Studio manually after each build (Plugin tab → Manage Plugins, or via the Reload button if you have one configured).
@@ -30,18 +33,37 @@ The watch script (`tools/watch.js`) builds into `~/Documents/Roblox/Plugins/RoMa
 ## Project structure
 
 ```
-src/
-  Plugin/
+plugin/
+  Version.txt                   -- plugin version; must be bumped every commit
+  Packages/                     -- Wally-managed packages; do not edit
+  src/
     init.server.luau            -- entry point; mounts the React root into CoreGui
     App/
       init.luau                 -- root App React component
+      Page.luau                 -- page wrapper/transition component
+      Theme.luau                -- theme colors and styling values
       Components/
+        Navigation/             -- sidebar and sidebar buttons
+        PrimitiveComponents/    -- generic UI building blocks (Button, Dropdown, TextLabel, ...)
         StudioComponents/       -- thin React wrappers around Studio API objects
+      Hooks/                    -- custom React hooks (useSpring)
+      StatusPages/              -- one page per sidebar section (Home, Build, Structure, Appearance, Settings)
     Assets/
       Icons.luau                -- icon asset ID references
-Packages/                       -- Wally-managed packages; do not edit
+    Builder/                    -- turns generated grids into Parts in the workspace
+    Classes/                    -- generic data structures (Stack)
+    Data/
+      Constants.luau            -- shared constant values
+    Generators/                 -- maze grid + generation algorithms
+      Algorithms/               -- one module per maze algorithm (RandomizedDepthFirstSearch)
+    Utils/                      -- small pure helper functions
+.lune/
+  tests/                        -- automated tests, run with Lune via `npm test`
+  manual-tests/                 -- tests run by hand during development
+PCAssets/                       -- source images (plugin icons, cursors) uploaded as Roblox assets
 tools/
-  watch.js                      -- file watcher; runs rojo build on any src/ change
+  watch.js                      -- file watcher; runs rojo build on any plugin/ change
+  test.js                       -- runs every .luau file in .lune/tests via Lune
 plugin.project.json             -- Rojo project definition
 wally.toml                      -- Luau package dependencies
 rokit.toml                      -- toolchain pin (rojo, wally, wally-package-types)
@@ -73,6 +95,10 @@ All UI is built with React (`jsdotlua/react` + `jsdotlua/react-roblox`). `Studio
 |---|---|
 | React | UI framework |
 | ReactRoblox | React renderer for Roblox |
+| Sift | Immutable table utilities (arrays, dictionaries, sets) |
+| Ripple | Spring/tween motion library (backs the `useSpring` hook) |
+| Charm | Atomic state management (the `*Slice.luau` modules) |
+| ReactCharm | React bindings for Charm atoms |
 
 ## Linting & formatting
 
@@ -83,15 +109,13 @@ All UI is built with React (`jsdotlua/react` + `jsdotlua/react-roblox`). `Studio
 
 **Commit messages**: Prefix with `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, or `test:` (e.g. `feat: add Kruskal maze generator`). Enforced by the `commit-msg` hook in `.githooks/` — run `git config core.hooksPath .githooks` once after cloning to enable it.
 
-**Version bump**: `Version.txt` must be raised on every commit (the same hook compares the staged version against `HEAD`'s). Bump patch for fixes/chores, minor for features, per semver.
+**Version bump**: `plugin/Version.txt` must be raised on every commit (the same hook compares the staged version against `HEAD`'s). Bump patch for fixes/chores, minor for features, per semver.
 
 **Plan before multi-file changes**: For anything touching more than one file (a new generation algorithm, a new Studio component tree, a cross-cutting refactor), write a short plan first — expected behavior, affected files, how it'll be verified — before writing code. Single-file fixes and small tweaks don't need this.
 
-**Verify before calling it done**: After a behavior change, rebuild (`npm run watch` or the one-off `rojo build` command above), reload the plugin in Studio, and actually exercise the changed path (open the widget, run the generator, check the built maze) rather than relying on the build succeeding as a proxy for correctness.
-
 ## What to avoid
 
-- Don't edit `Packages/` — managed by Wally.
+- Don't edit `plugin/Packages/` — managed by Wally.
 - Don't hand-edit `plugin.project.json` without also checking that `rojo build` still succeeds.
 - Don't use `game:GetService()` for services that don't exist in a plugin context — prefer the `plugin` API directly.
 - Don't add global state at module level; keep all state inside React components or contexts.
