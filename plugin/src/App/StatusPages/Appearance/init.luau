@@ -246,7 +246,7 @@ local function Appearance(_props: AppearanceProps)
 							}),
 
 							ColorWheelFrame = e("CanvasGroup", {
-								Size = UDim2.fromOffset(225, 150),
+								Size = UDim2.fromOffset(250, 150),
 								Position = UDim2.new(0.5, 23, 0, 110),
 								AnchorPoint = Vector2.new(0.5, 0.5),
 								GroupTransparency = transparency,
@@ -364,7 +364,7 @@ local function Appearance(_props: AppearanceProps)
 												RGBLabel = e(TextLabel, {
 													LayoutOrder = 1,
 													Size = UDim2.new(1, 0, 0, 39),
-													TextSize = 14,
+													TextSize = 16,
 													Text = GetColorStringFromRGB(selectedPartColor, true),
 													TextXAlignment = Enum.TextXAlignment.Center,
 													Stroke = {
@@ -384,7 +384,7 @@ local function Appearance(_props: AppearanceProps)
 												HexLabel = e(TextLabel, {
 													LayoutOrder = 2,
 													Size = UDim2.new(1, 0, 0, 39),
-													TextSize = 14,
+													TextSize = 16,
 													Text = `#{string.upper(selectedPartColor:ToHex())}`,
 													TextXAlignment = Enum.TextXAlignment.Center,
 													Stroke = {
@@ -404,7 +404,7 @@ local function Appearance(_props: AppearanceProps)
 												HSVLabel = e(TextLabel, {
 													LayoutOrder = 3,
 													Size = UDim2.new(1, 0, 0, 39),
-													TextSize = 14,
+													TextSize = 16,
 													Text = FormatHSV(selectedPartColor:ToHSV()),
 													TextXAlignment = Enum.TextXAlignment.Center,
 													Stroke = {
