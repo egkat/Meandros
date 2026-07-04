@@ -10,6 +10,7 @@ local DEFAULT_RESOLUTION_MULTIPLIER = 2
 export type ColorWheelProps = {
 	Size: number,
 	ResolutionMultiplier: number?,
+	Active: boolean?,
 	selectedColor: Color3?,
 	onColorChanged: ((newColor: Color3) -> ())?,
 }
@@ -107,6 +108,12 @@ local function ColorWheel(props: ColorWheelProps)
 		end
 	end, { props.Size, resolutionMultiplier })
 
+	React.useEffect(function()
+		if not props.Active then
+			setIsDragging(false)
+		end
+	end, { props.Active })
+
 	local cursorAngle = hue * 2 * math.pi
 	local cursorPosition = UDim2.fromScale(
 		0.5 + (math.cos(cursorAngle) * saturation * 0.5),
@@ -134,6 +141,10 @@ local function ColorWheel(props: ColorWheelProps)
 			ZIndex = 2,
 
 			[React.Event.MouseButton1Down] = function(rbx: ImageButton, x: number, y: number)
+				if not props.Active then
+					return
+				end
+
 				dragOverlayTargetRef.current = rbx:FindFirstAncestorWhichIsA("LayerCollector")
 				setIsDragging(true)
 				updateSelectedColor(x, y)
@@ -179,7 +190,6 @@ local function ColorWheel(props: ColorWheelProps)
 			ZIndex = 3,
 		}),
 	})
-
 end
 
 return ColorWheel

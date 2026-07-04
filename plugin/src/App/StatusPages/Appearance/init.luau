@@ -347,6 +347,7 @@ local function Appearance(_props: AppearanceProps)
 													ResolutionMultiplier = 4,
 													selectedColor = selectedPartColor,
 													onColorChanged = AppearanceSlice.actions.setSelectedPartColor,
+													Active = colorWheelOpen
 												}),
 											}),
 											RightFrame = e("Frame", {
