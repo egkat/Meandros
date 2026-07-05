@@ -145,6 +145,7 @@ local function Dropdown(props: DropdownProps)
 		AnchorPoint = props.AnchorPoint,
 		LayoutOrder = props.layoutOrder,
 		BackgroundTransparency = 1,
+		ZIndex = 10,
 	}, {
 		Head = e(Button, {
 			Size = UDim2.fromScale(1, 1),

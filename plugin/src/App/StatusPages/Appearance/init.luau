@@ -2,6 +2,7 @@ local AppearanceSlice = require(script.AppearanceSlice)
 local ColorWheel = require(script.Components.ColorWheel)
 local Button = require(script.Parent.Parent.Components.PrimitiveComponents.Button)
 local Dropdown = require(script.Parent.Parent.Components.PrimitiveComponents.Dropdown)
+local Slider = require(script.Parent.Parent.Components.PrimitiveComponents.Slider)
 local TextLabel = require(script.Parent.Parent.Components.PrimitiveComponents.TextLabel)
 local useSpring = require(script.Parent.Parent.Hooks.useSpring)
 local Icons = require(script.Parent.Parent.Parent.Assets.Icons)
@@ -11,6 +12,7 @@ local ReactCharm = require(script.Parent.Parent.Parent.Parent.Packages.ReactChar
 local FormatHSV = require(script.Parent.Parent.Parent.Utils.FormatHSV)
 local GetColorStringFromRGB = require(script.Parent.Parent.Parent.Utils.GetColorStringFromRGB)
 local GetInvertedColor = require(script.Parent.Parent.Parent.Utils.GetInvertedColor)
+local Round = require(script.Parent.Parent.Parent.Utils.Round)
 local Theme = require(script.Parent.Parent.Theme)
 
 local e = React.createElement
@@ -23,6 +25,7 @@ local function Appearance(_props: AppearanceProps)
 	local theme = Theme.useTheme()
 	local selectedPartMaterial = ReactCharm.useAtom(AppearanceSlice.state.selectedPartMaterial)
 	local selectedPartColor = ReactCharm.useAtom(AppearanceSlice.state.selectedPartColor)
+	local selectedPartTransparency = ReactCharm.useAtom(AppearanceSlice.state.selectedPartTransparency)
 	local colorWheelOpen, setColorWheelOpen = React.useState(false)
 	local viewportFrameRef = React.useRef(nil :: ViewportFrame?)
 	local viewportCameraRef = React.useRef(nil :: Camera?)
@@ -31,11 +34,9 @@ local function Appearance(_props: AppearanceProps)
 	local transparency, transparencySpring = useSpring(1)
 
 	React.useEffect(function()
-
 		local function buildViewport(material: string, color: Color3, transparency: number?)
+			local t = transparency or 0
 
-			local t = 0
-			
 			local viewportPart = Instance.new("Part")
 
 			viewportPart.Size = Vector3.one * 4
@@ -54,12 +55,10 @@ local function Appearance(_props: AppearanceProps)
 			viewportPart.Parent = viewportFrameRef.current
 
 			viewportFrameRef.current.CurrentCamera = viewportCamera
-
 		end
-		
-		local function updateViewport(material: string, color: Color3, transparency: number?)
 
-			local t = 0
+		local function updateViewport(material: string, color: Color3, transparency: number?)
+			local t = transparency or 0
 
 			local newMaterial = Enum.Material[material]
 			local newColor = color
@@ -73,16 +72,14 @@ local function Appearance(_props: AppearanceProps)
 			end
 
 			viewportPartRef.current.Transparency = t
-
 		end
 
 		if viewportPartRef.current then
-			updateViewport(selectedPartMaterial, selectedPartColor)
+			updateViewport(selectedPartMaterial, selectedPartColor, selectedPartTransparency)
 		else
-			buildViewport(selectedPartMaterial, selectedPartColor)
+			buildViewport(selectedPartMaterial, selectedPartColor, selectedPartTransparency)
 		end
-
-	end, {selectedPartMaterial, selectedPartColor})
+	end, { selectedPartMaterial, selectedPartColor, selectedPartTransparency } :: { unknown })
 
 	React.useEffect(function()
 		return function()
@@ -235,90 +232,135 @@ local function Appearance(_props: AppearanceProps)
 									}),
 								},
 							}),
-							MaterialDropdown = e(Dropdown, {
-								Position = UDim2.new(0.5, 0, 0, 40),
-								AnchorPoint = Vector2.new(0.5, 0),
-								Size = UDim2.new(1, -10, 0, 28),
-								placeholderOption = "Material",
-								dropdownOptions = Constants.MATERIALS,
-								active = selectedPartMaterial,
-								onSelect = AppearanceSlice.actions.setSelectedPartMaterial,
-							}),
-
-							ToggleColorPickerFrame = e("Frame", {
-								Position = UDim2.new(0.5, 0, 0, 80),
-								AnchorPoint = Vector2.new(0.5, 0),
-								Size = UDim2.new(1, -10, 0, 28),
-								BackgroundColor3 = theme.Background,
+						}),
+						BottomFrame = e("Frame", {
+							Position = UDim2.fromScale(0.5, 1),
+							AnchorPoint = Vector2.new(0.5, 1),
+							Size = UDim2.new(1, 0, 1, -30),
+							BackgroundTransparency = 1,
+							BorderSizePixel = 0,
+						}, {
+							ContainerFrame = e("Frame", {
+								BackgroundTransparency = 1,
 								BorderSizePixel = 0,
+								Size = UDim2.fromScale(1, 1),
+								Position = UDim2.fromScale(0.5, 0.5),
+								AnchorPoint = Vector2.new(0.5, 0.5),
 							}, {
-								UIStroke = e("UIStroke", {
-									Thickness = 1,
-									Color = GetInvertedColor(theme.Background),
+								UIListLayout = e("UIListLayout", {
+									FillDirection = Enum.FillDirection.Vertical,
+									SortOrder = Enum.SortOrder.LayoutOrder,
+									HorizontalAlignment = Enum.HorizontalAlignment.Center,
+									VerticalAlignment = Enum.VerticalAlignment.Center,
+									Padding = UDim.new(0, 15),
 								}),
-								UIGradient = e("UIGradient", {
-									Rotation = 90,
-									Color = ColorSequence.new({
-										ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-										ColorSequenceKeypoint.new(1, Color3.fromRGB(187, 187, 187)),
-									}),
+								MaterialDropdown = e(Dropdown, {
+									LayoutOrder = 1,
+									Size = UDim2.new(1, -10, 0, 28),
+									placeholderOption = "Material",
+									dropdownOptions = Constants.MATERIALS,
+									active = selectedPartMaterial,
+									onSelect = AppearanceSlice.actions.setSelectedPartMaterial,
 								}),
-								ColorButton = e(Button, {
-									Size = UDim2.fromScale(1, 1),
-									Position = UDim2.fromScale(0.5, 0.5),
-									AnchorPoint = Vector2.new(0.5, 0.5),
-									BackgroundTransparency = 1,
+								ToggleColorPickerFrame = e("Frame", {
+									LayoutOrder = 2,
+									Size = UDim2.new(1, -10, 0, 28),
+									BackgroundColor3 = theme.Background,
 									BorderSizePixel = 0,
-									hoverScale = 1,
-									Activated = function()
-										setColorWheelOpen(function(oldState: boolean)
-											return not oldState
-										end)
-									end,
 								}, {
-									ColorLabelFrame = e("Frame", {
-										AnchorPoint = Vector2.new(0, 0.5),
-										Position = UDim2.fromScale(0, 0.5),
-										Size = UDim2.new(1, -30, 1, 0),
-										BackgroundTransparency = 1,
-										BorderSizePixel = 0,
-									}, {
-										ColorLabel = e(TextLabel, {
-											AnchorPoint = Vector2.new(0.5, 0.5),
-											Position = UDim2.fromScale(0.5, 0.5),
-											Size = UDim2.new(1, -5, 1, -5),
-											Text = GetColorStringFromRGB(selectedPartColor, true),
-											TextSize = 14,
-											TextColor3 = theme.Foreground,
-											TextXAlignment = Enum.TextXAlignment.Center,
+									UIStroke = e("UIStroke", {
+										Thickness = 1,
+										Color = GetInvertedColor(theme.Background),
+									}),
+									UIGradient = e("UIGradient", {
+										Rotation = 90,
+										Color = ColorSequence.new({
+											ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+											ColorSequenceKeypoint.new(1, Color3.fromRGB(187, 187, 187)),
 										}),
 									}),
-									ColorPreviewFrame = e("Frame", {
-										AnchorPoint = Vector2.new(1, 0.5),
-										Position = UDim2.fromScale(1, 0.5),
-										Size = UDim2.fromOffset(28, 28),
+									ColorButton = e(Button, {
+										Size = UDim2.fromScale(1, 1),
+										Position = UDim2.fromScale(0.5, 0.5),
+										AnchorPoint = Vector2.new(0.5, 0.5),
 										BackgroundTransparency = 1,
 										BorderSizePixel = 0,
+										hoverScale = 1,
+										Activated = function()
+											setColorWheelOpen(function(oldState: boolean)
+												return not oldState
+											end)
+										end,
 									}, {
-										ColorFrame = e("Frame", {
-											AnchorPoint = Vector2.new(0.5, 0.5),
-											Position = UDim2.fromScale(0.5, 0.5),
-											Size = UDim2.new(1, -10, 1, -10),
-											BackgroundColor3 = selectedPartColor,
+										ColorLabelFrame = e("Frame", {
+											AnchorPoint = Vector2.new(0, 0.5),
+											Position = UDim2.fromScale(0, 0.5),
+											Size = UDim2.new(1, -30, 1, 0),
+											BackgroundTransparency = 1,
 											BorderSizePixel = 0,
 										}, {
-											UIStroke = e("UIStroke", {
-												Thickness = 1,
-												Color = Color3.fromRGB(255, 255, 255),
+											ColorLabel = e(TextLabel, {
+												AnchorPoint = Vector2.new(0.5, 0.5),
+												Position = UDim2.fromScale(0.5, 0.5),
+												Size = UDim2.new(1, -5, 1, -5),
+												Text = GetColorStringFromRGB(selectedPartColor, true),
+												TextSize = 14,
+												TextColor3 = theme.Foreground,
+												TextXAlignment = Enum.TextXAlignment.Center,
+											}),
+										}),
+										ColorPreviewFrame = e("Frame", {
+											AnchorPoint = Vector2.new(1, 0.5),
+											Position = UDim2.fromScale(1, 0.5),
+											Size = UDim2.fromOffset(28, 28),
+											BackgroundTransparency = 1,
+											BorderSizePixel = 0,
+										}, {
+											ColorFrame = e("Frame", {
+												AnchorPoint = Vector2.new(0.5, 0.5),
+												Position = UDim2.fromScale(0.5, 0.5),
+												Size = UDim2.new(1, -10, 1, -10),
+												BackgroundColor3 = selectedPartColor,
+												BorderSizePixel = 0,
+											}, {
+												UIStroke = e("UIStroke", {
+													Thickness = 1,
+													Color = Color3.fromRGB(255, 255, 255),
+												}),
 											}),
 										}),
 									}),
 								}),
+								SliderFrame = e("Frame", {
+									LayoutOrder = 3,
+									Size = UDim2.new(1, -10, 0, 28),
+									BackgroundTransparency = 1,
+									BorderSizePixel = 0,
+								}, {
+									TranparencySlider = e(Slider, {
+										Position = UDim2.fromScale(0.5, 0.5),
+										Size = UDim2.fromScale(1, 1),
+										AnchorPoint = Vector2.new(0.5, 0.5),
+										Value = selectedPartTransparency,
+										Min = 0,
+										Max = 1,
+										Step = 0.01,
+										OnChanged = function(newTransparency: number)
+											AppearanceSlice.actions.setSelectedPartTransparency(newTransparency)
+										end,
+									}),
+									TransparencyLabel = e(TextLabel, {
+										AnchorPoint = Vector2.new(0, 0.5),
+										Position = UDim2.fromScale(1, 0.5),
+										Size = UDim2.fromOffset(28, 28),
+										TextSize = 16,
+										Text = Round(math.abs(selectedPartTransparency), 2),
+									})
+								}),
 							}),
-
 							ColorWheelFrame = e("CanvasGroup", {
 								Size = UDim2.fromOffset(250, 150),
-								Position = UDim2.new(0.5, 34, 0, 110),
+								Position = UDim2.new(0.5, 34, 0, 80),
 								AnchorPoint = Vector2.new(0.5, 0.5),
 								GroupTransparency = transparency,
 								Visible = transparency:map(function(currentTransparency: number)
@@ -419,7 +461,7 @@ local function Appearance(_props: AppearanceProps)
 													Position = UDim2.fromScale(0.5, 0.5),
 													BackgroundTransparency = 1,
 													BorderSizePixel = 0,
-													ZIndex = -1
+													ZIndex = -1,
 												}, {
 													UICorner = e("UICorner", {
 														CornerRadius = UDim.new(1, 0),
@@ -582,7 +624,7 @@ local function Appearance(_props: AppearanceProps)
 								BackgroundTransparency = 1,
 								BorderSizePixel = 0,
 							}, {
-								ViewportFrame = e("ViewportFrame", {			
+								ViewportFrame = e("ViewportFrame", {
 									Size = UDim2.fromScale(1, 1),
 									Position = UDim2.fromScale(0.5, 0.5),
 									AnchorPoint = Vector2.new(0.5, 0.5),
@@ -593,9 +635,9 @@ local function Appearance(_props: AppearanceProps)
 								UIStroke = e("UIStroke", {
 									Color = GetInvertedColor(theme.Background),
 									Thickness = 2,
-								})
-							})
-						})
+								}),
+							}),
+						}),
 					}),
 				}),
 			}),
