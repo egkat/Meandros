@@ -35,7 +35,7 @@ Constants.MATERIALS = {
     "DiamondPlate",
     "Fabric",
     "Foil",
-    "Forcefield",
+    "ForceField",
     "Glacier",
     "Glass",
     "Granite",
