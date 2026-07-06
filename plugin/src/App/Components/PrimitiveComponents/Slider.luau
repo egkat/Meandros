@@ -1,4 +1,4 @@
--- Drag logic from https://github.com/sircfenner/StudioComponents
+-- From https://github.com/sircfenner/StudioComponents
 
 local useFreshCallback = require(script.Parent.Parent.Parent.Hooks.useFreshCallback)
 local useMouseDrag = require(script.Parent.Parent.Parent.Hooks.useMouseDrag)

@@ -1,4 +1,4 @@
--- From https://github.com/rojo-rbx/rojo/blob/master/plugin/src/strict.lua
+-- From https://github.com/rojo-rbx/rojo
 
 local function _strict(name, target)
 	assert(typeof(name) == "string", "Argument #1 to `strict` must be a string or the table to modify")
