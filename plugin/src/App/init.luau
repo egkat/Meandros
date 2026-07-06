@@ -5,6 +5,7 @@ local StudioToolbar = require(script.Components.StudioComponents.StudioToolbar)
 local StudioToolbarButton = require(script.Components.StudioComponents.StudioToolbarButton)
 local Page = require(script.Page)
 local Icons = require(script.Parent.Assets.Icons)
+local Config = require(script.Parent.Data.Config)
 local Constants = require(script.Parent.Data.Constants)
 local React = require(script.Parent.Parent.Packages.React)
 local Sift = require(script.Parent.Parent.Packages.Sift)
@@ -60,6 +61,7 @@ local function App(props: AppProps)
 				active = guiEnabled,
 				floatingSize = Vector2.new(450, 550),
 				minimumSize = Vector2.new(360, 400),
+				title = `{Constants.PLUGIN_NAME} {Config.version}`,
 				onInitialState = function(initialState)
 					setGuiEnabled(initialState)
 				end,

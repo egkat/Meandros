@@ -16,7 +16,8 @@ export type StudioPluginGuiProps = {
 	minimumSize: Vector2?,
 	onInitialState: ((initialState: boolean) -> ())?,
 	onClose: (() -> ())?,
-	children: any
+	children: any,
+	title: string,
 }
 
 local DefaultProps = {
@@ -52,7 +53,7 @@ local function StudioPluginGui(props: StudioPluginGuiProps)
 
 		local newPluginGui = studioPlugin:CreateDockWidgetPluginGuiAsync(Constants.WIDGET_ID, dockWidgetPluginGuiInfo)
 		newPluginGui.Name = Constants.WIDGET_ID
-		newPluginGui.Title = Constants.WIDGET_TITLE
+		newPluginGui.Title = props.title
 		newPluginGui.ZIndexBehavior = props.zIndexBehavior or DefaultProps.zIndexBehavior
 
 		if props.onInitialState then
