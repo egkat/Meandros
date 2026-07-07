@@ -1,3 +1,5 @@
+local Setting = require(script.Components.Setting)
+local ScrollingFrame = require(script.Parent.Parent.Components.PrimitiveComponents.ScrollingFrame)
 local TextLabel = require(script.Parent.Parent.Components.PrimitiveComponents.TextLabel)
 local Icons = require(script.Parent.Parent.Parent.Assets.Icons)
 local Constants = require(script.Parent.Parent.Parent.Data.Constants)
@@ -11,6 +13,8 @@ export type SettingsProps = {
 }
 
 local function Settings(props: SettingsProps)
+	local contentSize, setContentSize = React.createBinding(Vector2.zero)
+
 	local theme = Theme.useTheme()
 
 	return e(React.Fragment, nil, {
@@ -84,6 +88,34 @@ local function Settings(props: SettingsProps)
 				BorderSizePixel = 0,
 				BackgroundColor3 = theme.Background,
 			}, {
+
+				ContainerFrame = e(ScrollingFrame, {
+					Size = UDim2.fromScale(1, 1),
+					AnchorPoint = Vector2.new(0.5, 0.5),
+					Position = UDim2.fromScale(0.5, 0.5),
+					contentSize = contentSize,
+				}, {
+					RandomizeAppearanceOnInit = e(Setting, {
+						id = "randomizeAppearanceOnInit",
+						name = "Randomize Appearance on Init",
+						description = "Randomizes the Maze Material Color and Transparency when Plugin is opened.",
+						layoutOrder = 1,
+					}),
+					Layout = e("UIListLayout", {
+						FillDirection = Enum.FillDirection.Vertical,
+						SortOrder = Enum.SortOrder.LayoutOrder,
+
+						[React.Change.AbsoluteContentSize] = function(object)
+							setContentSize(object.AbsoluteContentSize)
+						end,
+					}),
+
+					Padding = e("UIPadding", {
+						PaddingLeft = UDim.new(0, 20),
+						PaddingRight = UDim.new(0, 20),
+					}),
+				}),
+
 				UIStroke = e("UIStroke", {
 					Color = Color3.fromRGB(0, 0, 0),
 					Thickness = 1,
