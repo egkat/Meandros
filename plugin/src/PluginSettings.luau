@@ -1,9 +1,10 @@
 -- From https://github.com/rojo-rbx/rojo/
 
+local plugin = plugin or script:FindFirstAncestorWhichIsA("Plugin")
 local React = require(script.Parent.Parent.Packages.React)
 
 local DEFAULT_SETTINGS = {
-	randomizeAppearanceOnInit = true,
+	randomizeAppearanceOnInit = false,
 	-- autoPreview = false,
 	-- checkForUpdates = false
 }
@@ -15,6 +16,7 @@ Settings._settingUpdateListeners = {}
 Settings._settingBindings = {}
 
 if plugin then
+
 	for settingName, defaultSettingValue in pairs(Settings._settingValues) do
 		local savedValue = plugin:GetSetting(`Meandros_{settingName}`)
 

@@ -89,7 +89,7 @@ local function Setting(props: SettingProps)
 			locked = props.locked,
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.fromScale(1, 0.5),
-            Size = UDim2.fromOffset(30, 30),
+            Size = UDim2.fromOffset(25, 25),
 			onClick = function()
 				PluginSettings:setSetting(props.id, not PluginSettings:getSetting(props.id))
 			end,
