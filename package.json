@@ -1,5 +1,5 @@
 {
-  "name": "romaze",
+  "name": "meandros",
   "version": "0.1.0",
   "scripts": {
     "watch": "node tools/watch.js",

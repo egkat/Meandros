@@ -8,7 +8,7 @@ version = "0.0.11"
 dependencies = []
 
 [[package]]
-name = "emichaelg/romaze"
+name = "emichaelg/meandros"
 version = "0.1.0"
 dependencies = [["Charm", "littensy/charm@0.10.0"], ["React", "jsdotlua/react@17.2.1"], ["ReactCharm", "littensy/react-charm@0.3.0"], ["ReactRoblox", "jsdotlua/react-roblox@17.2.1"], ["Ripple", "littensy/ripple@0.10.2"], ["Sift", "csqrl/sift@0.0.11"]]
 

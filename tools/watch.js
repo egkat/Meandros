@@ -6,7 +6,7 @@ const PLUGINS_FOLDER = `${os.homedir()}/Documents/Roblox/Plugins`;
 
 function build() {
   try {
-    execSync(`rojo build plugin.project.json --output "${PLUGINS_FOLDER}/RoMaze.rbxm"`);
+    execSync(`rojo build plugin.project.json --output "${PLUGINS_FOLDER}/Meandros.rbxm"`);
     console.log("✅ Built");
   } catch (e) {
     console.error("❌ Failed:", e.message);

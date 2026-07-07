@@ -3,7 +3,7 @@ local App = require(script.App)
 local React = require(script.Parent.Packages.React)
 
 if not plugin then
-    warn(`[RoMaze]: Plugin not found.`)
+    warn(`[Meandros]: Plugin not found.`)
     return
 end
 

@@ -16,10 +16,10 @@ Settings._settingBindings = {}
 
 if plugin then
 	for settingName, defaultSettingValue in pairs(Settings._settingValues) do
-		local savedValue = plugin:GetSetting(`RoMaze_{settingName}`)
+		local savedValue = plugin:GetSetting(`Meandros_{settingName}`)
 
 		if savedValue == nil then
-			task.spawn(plugin.SetSetting, plugin, `RoMaze_{settingName}`, defaultSettingValue)
+			task.spawn(plugin.SetSetting, plugin, `Meandros_{settingName}`, defaultSettingValue)
 			Settings._settingValues[settingName] = defaultSettingValue
 		else
 			Settings._settingValues[settingName] = savedValue
@@ -43,7 +43,7 @@ function Settings:setSetting(settingName: string, settingValue: any)
 	end
 
 	if plugin then
-		task.spawn(plugin.SetSetting, plugin, `RoMaze_{settingName}`, settingValue)
+		task.spawn(plugin.SetSetting, plugin, `Meandros_{settingName}`, settingValue)
 	end
 
 	if self._settingUpdateListeners[settingName] then

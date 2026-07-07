@@ -48,7 +48,7 @@ local function App(props: AppProps)
 				StudioToolbarButton = e(StudioToolbarButton, {
 					name = Constants.PLUGIN_NAME,
 					tooltip = Constants.TOOLBAR_TOOLTIP,
-					icon = Icons.RoMazePluginIcon.VersionOne,
+					icon = Icons.MeandrosPluginIcon.VersionFour,
 					active = guiEnabled,
 					onClick = function()
 						setGuiEnabled(function(previousState)

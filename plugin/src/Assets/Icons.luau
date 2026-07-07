@@ -1,9 +1,15 @@
 return {
 
-	RoMazePluginIcon = {
-		VersionOne = "rbxassetid://81339367783155",
-		VersionTwo = "rbxassetid://96044877838285",
-		VersionThree = "rbxassetid://103373547667416",
+	MeandrosPluginIcon = {
+		VersionOne = "rbxassetid://110044462858305",
+		VersionTwo = "rbxassetid://92413293931624",
+		VersionThree = "rbxassetid://131813695612433",
+		VersionFour = "rbxassetid://82845942825329",
+		Legacy = {
+			VersionOne = "rbxassetid://81339367783155",
+			VersionTwo = "rbxassetid://96044877838285",
+			VersionThree = "rbxassetid://103373547667416",
+		},
 	},
 
 	MouseIcon = {
@@ -35,7 +41,8 @@ return {
 	},
 
 	SidebarIcons = {
-		Home = "rbxassetid://81339367783155",
+		LegacyHome = "rbxassetid://81339367783155",
+		Home = "rbxassetid://82845942825329",
 		Structure = "rbxassetid://128461297434939",
 		Appearance = "rbxassetid://117031728528610",
 		Build = "rbxassetid://94580159329654",

@@ -1,4 +1,4 @@
-# RoMaze
+# Meandros
 
 A Roblox Studio plugin that generates mazes with configurable algorithms and settings.
 
@@ -16,7 +16,7 @@ Managed by [Rokit](https://github.com/rojo-rbx/rokit) (`rokit.toml`):
 npm run watch
 
 # One-off build
-rojo build plugin.project.json --output ~/Documents/Roblox/Plugins/RoMaze.rbxm
+rojo build plugin.project.json --output ~/Documents/Roblox/Plugins/Meandros.rbxm
 
 # Run the Lune test suite (.lune/tests)
 npm test
@@ -28,7 +28,7 @@ wally install
 selene plugin/src/
 ```
 
-The watch script (`tools/watch.js`) builds into `~/Documents/Roblox/Plugins/RoMaze.rbxm`. Reload the plugin in Roblox Studio manually after each build (Plugin tab → Manage Plugins, or via the Reload button if you have one configured).
+The watch script (`tools/watch.js`) builds into `~/Documents/Roblox/Plugins/Meandros.rbxm`. Reload the plugin in Roblox Studio manually after each build (Plugin tab → Manage Plugins, or via the Reload button if you have one configured).
 
 ## Project structure
 

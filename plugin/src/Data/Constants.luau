@@ -1,9 +1,9 @@
 local Constants = {}
 
-Constants.PLUGIN_NAME = `RoMaze`
-Constants.TOOLBAR_TOOLTIP = `Show or hide RoMaze`
+Constants.PLUGIN_NAME = `Meandros`
+Constants.TOOLBAR_TOOLTIP = `Show or hide Meandros`
 
-Constants.WIDGET_ID = `RoMazeMainWidget`
+Constants.WIDGET_ID = `MeandrosMainWidget`
 Constants.WIDGET_TITLE = Constants.PLUGIN_NAME
 Constants.WIDGET_DEFAULT_SIZE = Vector2.new(450, 550)
 Constants.WIDGET_MIN_SIZE = Vector2.new(360, 400)

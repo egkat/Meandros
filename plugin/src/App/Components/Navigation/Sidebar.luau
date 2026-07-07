@@ -12,7 +12,7 @@ export type SidebarProps = {
 }
 
 local SIDEBAR_BUTTON_CONFIGS = {
-	{ id = "Home", label = "Home", color = Constants.PAGE_COLORS.HOME, icon = Icons.RoMazePluginIcon.VersionOne },
+	{ id = "Home", label = "Home", color = Constants.PAGE_COLORS.HOME, icon = Icons.SidebarIcons.Home },
 	{ id = "Structure", label = "Structure", color = Constants.PAGE_COLORS.STRUCTURE, icon = Icons.SidebarIcons.Structure },
 	{ id = "Appearance", label = "Appearance",  color = Constants.PAGE_COLORS.APPEARANCE, icon = Icons.SidebarIcons.Appearance},
 	{ id = "Build", label = "Build",  color = Constants.PAGE_COLORS.BUILD, icon = Icons.SidebarIcons.Build},
