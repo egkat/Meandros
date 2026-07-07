@@ -22,8 +22,16 @@ local DIRECTION_VECTORS: { { direction: Wall, deltaX: number, deltaY: number } }
 	{ direction = "West", deltaX = -1, deltaY = 0 },
 }
 
+local DELTA_MAPPING: { [Wall]: { deltaX: number, deltaY: number } } = {
+	North = { deltaX = 0, deltaY = -1 },
+	South = { deltaX = 0, deltaY = 1 },
+	East = { deltaX = 1, deltaY = 0 },
+	West = { deltaX = -1, deltaY = 0 },
+}
+
 Grid.OPPOSITE_MAPPING = OPPOSITE_MAPPING
 Grid.DIRECTION_VECTORS = DIRECTION_VECTORS
+Grid.DELTA_MAPPING = DELTA_MAPPING
 
 function Grid.buildCell(row: number, column: number): Cell
 	return {
