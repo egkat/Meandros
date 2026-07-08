@@ -20,6 +20,11 @@ Constants.PAGE_COLORS = {
     SETTINGS = Color3.fromRGB(107, 114, 128)
 }
 
+Constants.MAZE_ALGORITHMS = {
+    "RandomizedDepthFirstSearch",
+    "RandomizedPrims"
+}
+
 Constants.MATERIALS = {
     "Asphalt",
     "Basalt",

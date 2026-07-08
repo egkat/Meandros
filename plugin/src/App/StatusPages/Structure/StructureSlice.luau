@@ -5,6 +5,7 @@ type Atom<T> = Charm.Atom<T>
 
 local selectedMazeWidth: Atom<number> = atom(25)
 local selectedMazeLength: Atom<number> = atom(25)
+local selectedMazeAlgorithm: Atom<string> = atom("RandomizedDepthFirstSearch")
 
 local actions = {
 	setSelectedMazeWidth = function(width: number)
@@ -17,12 +18,18 @@ local actions = {
 			return length
 		end)
 	end,
+	setSelectedMazeAlgorithm = function(algorithm: string)
+		selectedMazeAlgorithm(function(_oldAlgorithm: string)
+			return algorithm
+		end)
+	end,
 }
 
 return {
 	actions = actions,
 	state = {
-        selectedMazeWidth = selectedMazeWidth,
-        selectedMazeLength = selectedMazeLength,
+		selectedMazeWidth = selectedMazeWidth,
+		selectedMazeLength = selectedMazeLength,
+		selectedMazeAlgorithm = selectedMazeAlgorithm
 	},
 }
