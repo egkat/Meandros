@@ -1,10 +1,12 @@
+local AlgorithmSetting = require(script.Components.AlgorithmSetting)
+local NumberSetting = require(script.Components.NumberSetting)
 local StructureSlice = require(script.StructureSlice)
+local ScrollingFrame = require(script.Parent.Parent.Components.PrimitiveComponents.ScrollingFrame)
 local TextLabel = require(script.Parent.Parent.Components.PrimitiveComponents.TextLabel)
 local Icons = require(script.Parent.Parent.Parent.Assets.Icons)
 local Constants = require(script.Parent.Parent.Parent.Data.Constants)
 local React = require(script.Parent.Parent.Parent.Parent.Packages.React)
 local ReactCharm = require(script.Parent.Parent.Parent.Parent.Packages.ReactCharm)
-local GetInvertedColor = require(script.Parent.Parent.Parent.Utils.GetInvertedColor)
 local Theme = require(script.Parent.Parent.Theme)
 
 local e = React.createElement
@@ -13,103 +15,18 @@ export type StructureProps = {
 	transparency: number,
 }
 
-export type StructureInputBoxProps = {
-	label: string,
-	layoutOrder: number?,
-	value: number,
-	setValue: (value: number) -> (),
-}
-
-local function StructureInputBox(props: StructureInputBoxProps)
-	local theme = Theme.useTheme()
-
-	return e("Frame", {
-		Size = UDim2.fromOffset(150, 35),
-		LayoutOrder = props.layoutOrder,
-		BorderSizePixel = 0,
-		BackgroundColor3 = theme.Background,
-	}, {
-		UIStroke = e("UIStroke", {
-			Color = GetInvertedColor(theme.Background),
-			Thickness = 1,
-		}),
-		UIGradient = e("UIGradient", {
-			Rotation = 90,
-			Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(187, 187, 187)),
-			}),
-		}),
-		NameFrame = e("Frame", {
-			Size = UDim2.fromOffset(150 - 35, 35),
-			Position = UDim2.fromScale(0, 0.5),
-			AnchorPoint = Vector2.new(0, 0.5),
-			BackgroundTransparency = 1,
-		}, {
-			NameLabel = e(TextLabel, {
-				Size = UDim2.new(1, -10, 1, 0),
-				Position = UDim2.fromScale(0.5, 0.5),
-				AnchorPoint = Vector2.new(0.5, 0.5),
-				Text = props.label,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				TextSize = 16,
-				Stroke = {
-					Color = Color3.fromRGB(0, 0, 0),
-					Thickness = 2,
-					Transparency = 0,
-				},
-				Gradient = {
-					Rotation = 90,
-					Color = ColorSequence.new({
-						ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-						ColorSequenceKeypoint.new(1, Color3.fromRGB(208, 208, 208)),
-					}),
-				},
-			}),
-		}),
-		InputBoxFrame = e("Frame", {
-			Size = UDim2.fromOffset(35, 35),
-			Position = UDim2.fromScale(1, 0.5),
-			AnchorPoint = Vector2.new(1, 0.5),
-			BackgroundTransparency = 1,
-		}, {
-			UIStroke = e("UIStroke", {
-				Color = GetInvertedColor(theme.Background),
-				Thickness = 1,
-			}),
-			InputBox = e("TextBox", {
-				Size = UDim2.fromScale(1, 1),
-				Position = UDim2.fromScale(0.5, 0.5),
-				AnchorPoint = Vector2.new(0.5, 0.5),
-				BackgroundTransparency = 1,
-				Font = Enum.Font.BuilderSansExtraBold,
-				Text = tostring(props.value),
-				TextColor3 = Color3.fromRGB(255, 255, 255),
-				TextSize = 18,
-				ClearTextOnFocus = false,
-				[React.Event.FocusLost] = function(rbx: TextBox, _enterPressed: boolean, _inputObject: InputObject?)
-					local number = tonumber(rbx.Text)
-
-					if number ~= nil then
-						props.setValue(number)
-						rbx.Text = tostring(number)
-					else
-						rbx.Text = tostring(props.value)
-					end
-				end,
-			}, {
-				UIStroke = e("UIStroke", {
-					Color = Color3.fromRGB(0, 0, 0)
-				}),
-			}),
-		}),
-	})
-end
-
 local function Structure(_props: StructureProps)
+	local contentSize, setContentSize = React.useBinding(Vector2.zero)
+
 	local theme = Theme.useTheme()
 	local selectedMazeWidth = ReactCharm.useAtom(StructureSlice.state.selectedMazeWidth)
 	local selectedMazeLength = ReactCharm.useAtom(StructureSlice.state.selectedMazeLength)
+	local selectedMazeHeight = ReactCharm.useAtom(StructureSlice.state.selectedMazeHeight)
+	local selectedMazeFloorThickness = ReactCharm.useAtom(StructureSlice.state.selectedMazeFloorThickness)
+	local selectedMazeWallThickness = ReactCharm.useAtom(StructureSlice.state.selectedMazeWallThickness)
+	local selectedMazeAlgorithm = ReactCharm.useAtom(StructureSlice.state.selectedMazeAlgorithm)
+	local selectedMazeSeed = ReactCharm.useAtom(StructureSlice.state.selectedMazeSeed)
+	local selectedMazeEntranceExitCount = ReactCharm.useAtom(StructureSlice.state.selectedMazeEntranceExitCount)
 
 	return e(React.Fragment, nil, {
 
@@ -182,48 +99,110 @@ local function Structure(_props: StructureProps)
 				BorderSizePixel = 0,
 				BackgroundColor3 = theme.Background,
 			}, {
-				InsetFrame = e("Frame", {
-					Size = UDim2.new(1, -10, 1, -10),
-					Position = UDim2.fromScale(0.5, 0.5),
+
+				ContainerFrame = e(ScrollingFrame, {
+					Size = UDim2.fromScale(1, 1),
 					AnchorPoint = Vector2.new(0.5, 0.5),
-					BackgroundTransparency = 1,
-					BorderSizePixel = 0,
+					Position = UDim2.fromScale(0.5, 0.5),
+					contentSize = contentSize,
 				}, {
-					LeftFrame = e("Frame", {
-						AnchorPoint = Vector2.new(0, 0.5),
-						Position = UDim2.fromScale(0, 0.5),
-						Size = UDim2.fromScale(0.485, 1),
-						BackgroundTransparency = 1,
-						BorderSizePixel = 0,
-					}, {
-						UIListLayout = e("UIListLayout", {
-							FillDirection = Enum.FillDirection.Vertical,
-							SortOrder = Enum.SortOrder.LayoutOrder,
-							HorizontalAlignment = Enum.HorizontalAlignment.Center,
-							VerticalAlignment = Enum.VerticalAlignment.Center,
-							Padding = UDim.new(0, 5),
-						}),
-						MazeWidthBox = e(StructureInputBox, {
-							label = "Maze Width",
-							layoutOrder = 1,
-							value = selectedMazeWidth,
-							setValue = StructureSlice.actions.setSelectedMazeWidth,
-						}),
-						MazeLengthBox = e(StructureInputBox, {
-							label = "Maze Length",
-							layoutOrder = 2,
-							value = selectedMazeLength,
-							setValue = StructureSlice.actions.setSelectedMazeLength,
-						}),
+					MazeAlgorithm = e(AlgorithmSetting, {
+						name = "Maze Algorithm",
+						description = "The algorithm used to carve future mazes.",
+						active = selectedMazeAlgorithm,
+						options = Constants.MAZE_ALGORITHMS,
+						layoutOrder = 1,
+						ZIndex = 2,
+						onSelect = StructureSlice.actions.setSelectedMazeAlgorithm,
 					}),
-					RightFrame = e("Frame", {
-						AnchorPoint = Vector2.new(1, 0.5),
-						Position = UDim2.fromScale(1, 0.5),
-						Size = UDim2.fromScale(0.485, 1),
-						BackgroundTransparency = 1,
-						BorderSizePixel = 0,
+
+					MazeWidth = e(NumberSetting, {
+						name = "Maze Width",
+						description = "How many cells wide the maze is.",
+						value = selectedMazeWidth,
+						minValue = 1,
+						maxValue = 512,
+						integer = true,
+						layoutOrder = 2,
+						setValue = StructureSlice.actions.setSelectedMazeWidth,
+					}),
+
+					MazeLength = e(NumberSetting, {
+						name = "Maze Length",
+						description = "How many cells long the maze is.",
+						value = selectedMazeLength,
+						minValue = 1,
+						maxValue = 512,
+						integer = true,
+						layoutOrder = 3,
+						setValue = StructureSlice.actions.setSelectedMazeLength,
+					}),
+
+					MazeHeight = e(NumberSetting, {
+						name = "Maze Height",
+						description = "The height of the maze walls in studs.",
+						value = selectedMazeHeight,
+						minValue = 0.05,
+						maxValue = 64,
+						layoutOrder = 4,
+						setValue = StructureSlice.actions.setSelectedMazeHeight,
+					}),
+
+					FloorThickness = e(NumberSetting, {
+						name = "Floor Thickness",
+						description = "The thickness of the maze floor in studs.",
+						value = selectedMazeFloorThickness,
+						minValue = 0.05,
+						maxValue = 64,
+						layoutOrder = 5,
+						setValue = StructureSlice.actions.setSelectedMazeFloorThickness,
+					}),
+
+					WallThickness = e(NumberSetting, {
+						name = "Wall Thickness",
+						description = "The thickness of the maze walls in studs.",
+						value = selectedMazeWallThickness,
+						minValue = 0.05,
+						layoutOrder = 6,
+						setValue = StructureSlice.actions.setSelectedMazeWallThickness,
+					}),
+
+					Seed = e(NumberSetting, {
+						name = "Seed",
+						description = "The seed used to generate the maze.",
+						value = selectedMazeSeed,
+						minValue = 0,
+						integer = true,
+						layoutOrder = 7,
+						setValue = StructureSlice.actions.setSelectedMazeSeed,
+					}),
+
+					EntranceExits = e(NumberSetting, {
+						name = "Entrances & Exits",
+						description = "How many openings are carved into the maze border.",
+						value = selectedMazeEntranceExitCount,
+						minValue = 0,
+						maxValue = 16,
+						integer = true,
+						layoutOrder = 8,
+						setValue = StructureSlice.actions.setSelectedMazeEntranceExitCount,
+					}),
+
+					Layout = e("UIListLayout", {
+						FillDirection = Enum.FillDirection.Vertical,
+						SortOrder = Enum.SortOrder.LayoutOrder,
+
+						[React.Change.AbsoluteContentSize] = function(object)
+							setContentSize(object.AbsoluteContentSize)
+						end,
+					}),
+
+					Padding = e("UIPadding", {
+						PaddingLeft = UDim.new(0, 20),
+						PaddingRight = UDim.new(0, 20),
 					}),
 				}),
+
 				UIStroke = e("UIStroke", {
 					Color = Color3.fromRGB(0, 0, 0),
 					Thickness = 1,

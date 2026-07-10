@@ -40,8 +40,10 @@ export type DropdownProps = {
 	locked: boolean?,
 	dropdownOptions: { string },
 	placeholderOption: string?,
+	closedText: string?,
 	layoutOrder: number?,
 	Size: UDim2?,
+	openSize: UDim2?,
 	Position: UDim2?,
 	AnchorPoint: Vector2?,
 	onSelect: (selectedOption: string) -> (),
@@ -105,10 +107,14 @@ local function Dropdown(props: DropdownProps)
 	local theme = Theme.useTheme()
 	local dropdownOpen, setdropdownOpened = React.useState(false)
 
+	local closedSize = props.Size or BASE_SIZE
+
 	local rotation, rotationSpring = useSpring(ROTATION_STATES.CLOSED, { frequency = 6, dampingRatio = 1.1 })
+	local size, sizeSpring = useSpring(closedSize, { frequency = 6, dampingRatio = 1 })
 
 	React.useEffect(function()
 		rotationSpring:setGoal(if dropdownOpen then ROTATION_STATES.OPEN else ROTATION_STATES.CLOSED)
+		sizeSpring:setGoal(if dropdownOpen and props.openSize then props.openSize else closedSize)
 	end, { dropdownOpen })
 
 	React.useEffect(function()
@@ -140,7 +146,7 @@ local function Dropdown(props: DropdownProps)
 	end
 
 	return e("Frame", {
-		Size = props.Size or BASE_SIZE,
+		Size = if props.openSize then size else closedSize,
 		Position = props.Position,
 		AnchorPoint = props.AnchorPoint,
 		LayoutOrder = props.layoutOrder,
@@ -173,9 +179,11 @@ local function Dropdown(props: DropdownProps)
 
 				Active = e(TextLabel, {
 					Size = UDim2.new(1, -28, 1, 0),
-					Position = UDim2.fromScale(0, 0.5),
+					Position = UDim2.new(0, 4, 0.5, 0),
 					AnchorPoint = Vector2.new(0, 0.5),
-					Text = props.active or props.placeholderOption or "Select...",
+					Text = if dropdownOpen
+						then props.active or props.placeholderOption or "Select..."
+						else props.closedText or props.active or props.placeholderOption or "Select...",
 					TextSize = 14,
 					TextColor3 = theme.Foreground,
 					TextXAlignment = Enum.TextXAlignment.Center,

@@ -13,7 +13,7 @@ export type SettingsProps = {
 }
 
 local function Settings(props: SettingsProps)
-	local contentSize, setContentSize = React.createBinding(Vector2.zero)
+	local contentSize, setContentSize = React.useBinding(Vector2.zero)
 
 	local theme = Theme.useTheme()
 
