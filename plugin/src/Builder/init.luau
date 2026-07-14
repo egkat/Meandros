@@ -69,40 +69,38 @@ function Builder.build(grid: { Cell }, gridConfigs: GridConfigs, builderConfigs:
 	assert(typeof(grid) == "table", `[Builder]: grid must be a table`)
 	assert(typeof(gridConfigs) == "table", `[Builder]: gridConfigs must be a table`)
 	assert(typeof(builderConfigs) == "table", `[Builder]: builderConfigs must be a table`)
+	assert(typeof(builderConfigs.parent) == "Instance", `[Builder]: builderConfigs.parent must be an Instance`)
 
-	local container = Instance.new("Model")
-	container.Name = "Maze"
-	container.Parent = builderConfigs.parent or workspace
+	local parent = builderConfigs.parent
+	local parts = {}
 
-	Builder.buildFloor(gridConfigs, builderConfigs, container)
+	table.insert(parts, Builder.buildFloor(gridConfigs, builderConfigs, parent))
 
 	for _, cell in grid do
 		local cellCenter = Builder.calculateCellCenter(cell, builderConfigs)
 
 		-- Let south walls always generate over north walls
 		if cell.walls.North and cell.row == 1 then
-			Builder.buildWall(cell, "North", cellCenter, builderConfigs, container)
+			table.insert(parts, Builder.buildWall(cell, "North", cellCenter, builderConfigs, parent))
 		end
 
 		if cell.walls.South then
-			Builder.buildWall(cell, "South", cellCenter, builderConfigs, container)
+			table.insert(parts, Builder.buildWall(cell, "South", cellCenter, builderConfigs, parent))
 		end
 
 		-- Let east walls always generate over west walls
 		if cell.walls.East then
-			Builder.buildWall(cell, "East", cellCenter, builderConfigs, container)
+			table.insert(parts, Builder.buildWall(cell, "East", cellCenter, builderConfigs, parent))
 		end
 
 		if cell.walls.West and cell.column == 1 then
-			Builder.buildWall(cell, "West", cellCenter, builderConfigs, container)
+			table.insert(parts, Builder.buildWall(cell, "West", cellCenter, builderConfigs, parent))
 		end
 	end
 
 	return {
-		container = container,
+		parts = parts,
 	}
 end
-
-function Builder.destroyMaze() end
 
 return Builder

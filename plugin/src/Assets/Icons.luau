@@ -48,4 +48,11 @@ return {
 		Build = "rbxassetid://94580159329654",
 		Settings = "rbxassetid://124702319068909",
 	},
+
+	BuildPageIcons = {
+		PreviewMaze = "rbxassetid://135904765853984",
+		RevertPreviewMaze = "rbxassetid://79623276285174",
+		BuildMaze = "rbxassetid://120548680512423",
+	}
+
 }

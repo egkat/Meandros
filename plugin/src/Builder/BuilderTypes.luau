@@ -9,7 +9,7 @@ export type BuilderConfigs = {
 }
 
 export type BuildHandle = {
-	container: Model,
+	parts: { BasePart },
 }
 
 return nil

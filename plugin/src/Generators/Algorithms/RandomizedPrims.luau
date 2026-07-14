@@ -1,6 +1,6 @@
 --!strict
-local Grid = require(script.Parent.Parent.Grid)
-local GridTypes = require(script.Parent.Parent.GridTypes)
+local Grid = require("../Grid")
+local GridTypes = require("../GridTypes")
 
 type Wall = GridTypes.Wall
 type Cell = GridTypes.Cell
@@ -107,7 +107,6 @@ function RandomizedPrims.step(state: RandomizedPrimsState)
 	end
 
 	table.remove(state.frontier, randomIndex)
-
 end
 
 return RandomizedPrims

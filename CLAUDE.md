@@ -55,7 +55,9 @@ plugin/
     Data/
       Constants.luau            -- shared constant values
     Generators/                 -- maze grid + generation algorithms
+      MazeGenerator.luau        -- algorithm registry; runs a generation to completion
       Algorithms/               -- one module per maze algorithm (RandomizedDepthFirstSearch)
+    Services/                   -- workspace-facing orchestration (MazeService: preview/revert/build)
     Utils/                      -- small pure helper functions
 .lune/
   tests/                        -- automated tests, run with Lune via `npm test`

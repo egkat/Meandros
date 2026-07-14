@@ -1,7 +1,7 @@
 --!strict
-local Grid = require(script.Parent.Parent.Grid)
-local GridTypes = require(script.Parent.Parent.GridTypes)
-local Stack = require(script.Parent.Parent.Parent.Classes.Stack)
+local Grid = require("../Grid")
+local GridTypes = require("../GridTypes")
+local Stack = require("../../Classes/Stack")
 
 type Cell = GridTypes.Cell
 type GridConfigs = GridTypes.GridConfigs
@@ -65,12 +65,10 @@ function RandomizedDepthFirstSearch.step(state: RandomizedDepthFirstSearchState)
 	local unvisitedNeighbors = Grid.getUnvisitedCellNeighbors(state.grid, state.configs, topCell)
 
 	if #unvisitedNeighbors == 0 then
-
 		state.cellStack:pop()
 		state.currentCell = state.cellStack:peek() or topCell
 
 		return
-
 	end
 
 	local selectedUnvisitedNeighborEntryIndex = state.random:NextInteger(1, #unvisitedNeighbors)
@@ -81,7 +79,6 @@ function RandomizedDepthFirstSearch.step(state: RandomizedDepthFirstSearchState)
 
 	state.cellStack:push(selectedUnvisitedNeighborEntry.neighborCell)
 	state.currentCell = selectedUnvisitedNeighborEntry.neighborCell
-
 end
 
 return RandomizedDepthFirstSearch
