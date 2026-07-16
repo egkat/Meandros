@@ -28,6 +28,7 @@ Constants.PREVIEW_FOLDER_NAME = "MeandrosPreview"
 
 Constants.MAZE_ALGORITHMS = {
 	"RandomizedDepthFirstSearch",
+	"RandomizedKruskals",
 	"RandomizedPrims",
 }
 

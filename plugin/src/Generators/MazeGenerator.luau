@@ -1,6 +1,7 @@
 --!strict
 local GridTypes = require("./GridTypes")
 local RandomizedDepthFirstSearch = require("./Algorithms/RandomizedDepthFirstSearch")
+local RandomizedKruskals = require("./Algorithms/RandomizedKruskals")
 local RandomizedPrims = require("./Algorithms/RandomizedPrims")
 
 type Cell = GridTypes.Cell
@@ -13,6 +14,7 @@ type MazeAlgorithm = {
 
 local ALGORITHMS: { [string]: MazeAlgorithm } = {
 	RandomizedDepthFirstSearch = RandomizedDepthFirstSearch,
+	RandomizedKruskals = RandomizedKruskals,
 	RandomizedPrims = RandomizedPrims,
 }
 

@@ -21,7 +21,7 @@ export type StudioPluginGuiProps = {
 }
 
 local DefaultProps = {
-	initDockState = Enum.InitialDockState.Right,
+	initDockState = Enum.InitialDockState.Float,
 	active = false,
 	overridePreviousState = false,
 	zIndexBehavior = Enum.ZIndexBehavior.Sibling,
