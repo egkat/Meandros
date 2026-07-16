@@ -21,7 +21,7 @@ local CAMERA_FALLBACK_DISTANCE = 250
 
 export type MazeSettings = {
 	algorithm: string,
-	seed: number,
+	seed: number | string,
 	width: number,
 	length: number,
 	wallHeight: number,
@@ -33,7 +33,12 @@ export type MazeSettings = {
 	buildPosition: string,
 }
 
+local RANDOM_SEED_MAX = 2 ^ 31 - 1
+
 local isBuilding = false
+
+-- Seed rolled by the most recent "Random" preview, so a build reuses it while that preview stands
+local lastRandomPreviewSeed: number? = nil
 
 local MazeService = {}
 
@@ -131,13 +136,37 @@ local function repositionBuildOrigin(settings: MazeSettings): Vector3
 	return target - centerOffset
 end
 
-local function generateMazeParts(settings: MazeSettings, parent: Instance): { BasePart }
+local function resolveSeed(settings: MazeSettings, isBuild: boolean): number
+	if settings.seed == "Random" then
+		if isBuild then
+			if lastRandomPreviewSeed ~= nil and #CollectionService:GetTagged(Constants.PREVIEW_TAG) > 0 then
+				return lastRandomPreviewSeed
+			end
+
+			return Random.new():NextInteger(0, RANDOM_SEED_MAX)
+		end
+
+		lastRandomPreviewSeed = Random.new():NextInteger(0, RANDOM_SEED_MAX)
+
+		return lastRandomPreviewSeed :: number
+	end
+
+	assert(typeof(settings.seed) == "number", `[MazeService]: invalid seed '{settings.seed}'`)
+
+	if not isBuild then
+		lastRandomPreviewSeed = nil
+	end
+
+	return settings.seed
+end
+
+local function generateMazeParts(settings: MazeSettings, parent: Instance, seed: number): { BasePart }
 	local gridConfigs = {
 		width = settings.width,
 		height = settings.length,
 	}
 
-	local grid = MazeGenerator.generate(settings.algorithm, gridConfigs, settings.seed)
+	local grid = MazeGenerator.generate(settings.algorithm, gridConfigs, seed)
 
 	local buildHandle = Builder.build(grid, gridConfigs, {
 		cellSize = Constants.DEFAULT_CELL_SIZE,
@@ -152,12 +181,14 @@ local function generateMazeParts(settings: MazeSettings, parent: Instance): { Ba
 end
 
 function MazeService.preview(settings: MazeSettings)
+	local seed = resolveSeed(settings, false)
+
 	runRecorded("MeandrosPreviewMaze", function()
 		clearPreviewGeometry()
 
 		local previewFolder = getOrCreatePreviewFolder()
 
-		for _, part in generateMazeParts(settings, previewFolder) do
+		for _, part in generateMazeParts(settings, previewFolder, seed) do
 			CollectionService:AddTag(part, Constants.PREVIEW_TAG)
 			part.Material = PREVIEW_MATERIAL
 			part.Color = PREVIEW_COLOR
@@ -183,11 +214,13 @@ function MazeService.build(settings: MazeSettings)
 
 	isBuilding = true
 
+	local seed = resolveSeed(settings, true)
+
 	local success, buildError = pcall(runRecorded, "MeandrosBuildMaze", function()
 		local mazeModel = Instance.new("Model")
 		mazeModel.Name = BUILD_MODEL_NAME
 
-		local parts = generateMazeParts(settings, mazeModel)
+		local parts = generateMazeParts(settings, mazeModel, seed)
 
 		for _, part in parts do
 			part.Material = Enum.Material[settings.material]

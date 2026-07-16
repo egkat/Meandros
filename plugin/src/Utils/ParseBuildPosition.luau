@@ -1,8 +1,6 @@
 export type BuildPosition = Vector3 | "Camera"
 
--- Parses a build position string into either the literal "Camera" or a Vector3.
--- Accepts "Camera" (case-insensitive) or a tuple like "(100, 100, 100)" / "100, 100, 100".
--- Returns nil if the text is neither.
+
 return function(text: string): BuildPosition?
 	local trimmed = text:gsub("^%s+", ""):gsub("%s+$", "")
 
@@ -10,6 +8,7 @@ return function(text: string): BuildPosition?
 		return "Camera" :: "Camera"
 	end
 
+	-- Holy regex
 	local x, y, z = trimmed:match("^%(?%s*(%-?[%d%.]+)%s*,%s*(%-?[%d%.]+)%s*,%s*(%-?[%d%.]+)%s*%)?$")
 
 	local numberX = tonumber(x)

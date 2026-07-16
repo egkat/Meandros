@@ -23,7 +23,7 @@ PresetsData.Presets = {
 		MazeFloorThickness = 1,
 		MazeWallThickness = 1,
 		MazeAlgorithm = "RandomizedDepthFirstSearch",
-		MazeSeed = 0,
+		MazeSeed = 41245,
 		MazeEntranceExitCount = 2,
 	},
 	[2] = {

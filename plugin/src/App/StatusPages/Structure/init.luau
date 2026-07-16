@@ -27,6 +27,22 @@ local function validateBuildPosition(text: string): string?
 	return `({parsed.X}, {parsed.Y}, {parsed.Z})`
 end
 
+local function validateSeed(text: string): string?
+	local trimmed = string.gsub(text, "%s", "")
+
+	if string.lower(trimmed) == "random" then
+		return "Random"
+	end
+
+	local number = tonumber(trimmed)
+
+	if number == nil then
+		return nil
+	end
+
+	return tostring(math.max(math.round(number), 0))
+end
+
 export type StructureProps = {
 	transparency: number,
 }
@@ -184,14 +200,17 @@ local function Structure(_props: StructureProps)
 						setValue = StructureSlice.actions.setSelectedMazeWallThickness,
 					}),
 
-					Seed = e(NumberSetting, {
+					Seed = e(TextSetting, {
 						name = "Seed",
-						description = "The seed used to generate the maze.",
-						value = selectedMazeSeed,
-						minValue = 0,
-						integer = true,
+						description = "The seed used to generate the maze, or Random to roll a new seed every time.",
+						value = tostring(selectedMazeSeed),
+						validate = validateSeed,
 						layoutOrder = 7,
-						setValue = StructureSlice.actions.setSelectedMazeSeed,
+						setValue = function(value: string)
+							StructureSlice.actions.setSelectedMazeSeed(
+								if value == "Random" then value else tonumber(value) :: number
+							)
+						end,
 					}),
 
 					EntranceExits = e(NumberSetting, {

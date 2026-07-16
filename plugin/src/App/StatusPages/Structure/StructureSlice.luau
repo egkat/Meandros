@@ -9,7 +9,7 @@ local selectedMazeHeight: Atom<number> = atom(10)
 local selectedMazeFloorThickness: Atom<number> = atom(1)
 local selectedMazeWallThickness: Atom<number> = atom(1)
 local selectedMazeAlgorithm: Atom<string> = atom("RandomizedDepthFirstSearch")
-local selectedMazeSeed: Atom<number> = atom(0)
+local selectedMazeSeed: Atom<number | string> = atom(0 :: number | string)
 local selectedMazeEntranceExitCount: Atom<number> = atom(2)
 local selectedMazeBuildPosition: Atom<string> = atom("Camera")
 
@@ -44,8 +44,8 @@ local actions = {
 			return algorithm
 		end)
 	end,
-	setSelectedMazeSeed = function(seed: number)
-		selectedMazeSeed(function(_oldSeed: number)
+	setSelectedMazeSeed = function(seed: number | string)
+		selectedMazeSeed(function(_oldSeed: number | string)
 			return seed
 		end)
 	end,
