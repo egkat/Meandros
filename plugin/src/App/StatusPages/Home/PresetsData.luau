@@ -36,7 +36,7 @@ PresetsData.Presets = {
 		MazeFloorThickness = 2,
 		MazeWallThickness = 3,
 		MazeAlgorithm = "RandomizedPrims",
-		MazeSeed = 12345,
+		MazeSeed = 123454321,
 		MazeEntranceExitCount = 4,
 	},
 } :: { [number]: Preset }

@@ -39,9 +39,9 @@ function Builder.buildWall(
 	local size = nil
 
 	if correctDirectionVector.deltaX ~= 0 then
-		size = Vector3.new(builderConfigs.wallThickness, builderConfigs.wallHeight, builderConfigs.cellSize)
+		size = Vector3.new(builderConfigs.wallThickness, builderConfigs.wallHeight, builderConfigs.cellSize + builderConfigs.wallThickness)
 	elseif correctDirectionVector.deltaY ~= 0 then
-		size = Vector3.new(builderConfigs.cellSize, builderConfigs.wallHeight, builderConfigs.wallThickness)
+		size = Vector3.new(builderConfigs.cellSize + builderConfigs.wallThickness, builderConfigs.wallHeight, builderConfigs.wallThickness)
 	end
 
 	assert(size, `[Builder:] unknown wall size {size}`)
