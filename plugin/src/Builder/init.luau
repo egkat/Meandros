@@ -11,7 +11,8 @@ type BuildHandle = BuilderTypes.BuildHandle
 local Builder = {}
 
 function Builder.calculateCellCenter(cell: Cell, config: BuilderConfigs)
-	return Vector3.new((cell.column - 1) * config.cellSize, 0, (cell.row - 1) * config.cellSize)
+	return (config.origin or Vector3.zero)
+		+ Vector3.new((cell.column - 1) * config.cellSize, 0, (cell.row - 1) * config.cellSize)
 end
 
 function Builder.buildWall(
@@ -56,11 +57,12 @@ function Builder.buildFloor(gridConfigs: GridConfigs, builderConfigs: BuilderCon
 		gridConfigs.height * builderConfigs.cellSize
 	)
 
-	local position = Vector3.new(
-		(gridConfigs.width - 1) * builderConfigs.cellSize / 2,
-		-builderConfigs.floorThickness / 2,
-		(gridConfigs.height - 1) * builderConfigs.cellSize / 2
-	)
+	local position = (builderConfigs.origin or Vector3.zero)
+		+ Vector3.new(
+			(gridConfigs.width - 1) * builderConfigs.cellSize / 2,
+			-builderConfigs.floorThickness / 2,
+			(gridConfigs.height - 1) * builderConfigs.cellSize / 2
+		)
 
 	return PartFactory.createPart("FloorPart", CFrame.new(position), size, parent)
 end

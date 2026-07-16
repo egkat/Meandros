@@ -1,5 +1,7 @@
 local AlgorithmSetting = require(script.Components.AlgorithmSetting)
 local NumberSetting = require(script.Components.NumberSetting)
+local TextSetting = require(script.Components.TextSetting)
+local ParseBuildPosition = require(script.Parent.Parent.Parent.Utils.ParseBuildPosition)
 local StructureSlice = require(script.StructureSlice)
 local ScrollingFrame = require(script.Parent.Parent.Components.PrimitiveComponents.ScrollingFrame)
 local TextLabel = require(script.Parent.Parent.Components.PrimitiveComponents.TextLabel)
@@ -10,6 +12,20 @@ local ReactCharm = require(script.Parent.Parent.Parent.Parent.Packages.ReactChar
 local Theme = require(script.Parent.Parent.Theme)
 
 local e = React.createElement
+
+local function validateBuildPosition(text: string): string?
+	local parsed = ParseBuildPosition(text)
+
+	if parsed == nil then
+		return nil
+	end
+
+	if parsed == "Camera" then
+		return "Camera"
+	end
+
+	return `({parsed.X}, {parsed.Y}, {parsed.Z})`
+end
 
 export type StructureProps = {
 	transparency: number,
@@ -27,6 +43,7 @@ local function Structure(_props: StructureProps)
 	local selectedMazeAlgorithm = ReactCharm.useAtom(StructureSlice.state.selectedMazeAlgorithm)
 	local selectedMazeSeed = ReactCharm.useAtom(StructureSlice.state.selectedMazeSeed)
 	local selectedMazeEntranceExitCount = ReactCharm.useAtom(StructureSlice.state.selectedMazeEntranceExitCount)
+	local selectedMazeBuildPosition = ReactCharm.useAtom(StructureSlice.state.selectedMazeBuildPosition)
 
 	return e(React.Fragment, nil, {
 
@@ -186,6 +203,15 @@ local function Structure(_props: StructureProps)
 						integer = true,
 						layoutOrder = 8,
 						setValue = StructureSlice.actions.setSelectedMazeEntranceExitCount,
+					}),
+
+					BuildPosition = e(TextSetting, {
+						name = "Build Position",
+						description = "Where the maze is placed: a position like (100, 100, 100), or Camera to place it where your camera is looking.",
+						value = selectedMazeBuildPosition,
+						validate = validateBuildPosition,
+						layoutOrder = 9,
+						setValue = StructureSlice.actions.setSelectedMazeBuildPosition,
 					}),
 
 					Layout = e("UIListLayout", {

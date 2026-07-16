@@ -11,6 +11,7 @@ local selectedMazeWallThickness: Atom<number> = atom(1)
 local selectedMazeAlgorithm: Atom<string> = atom("RandomizedDepthFirstSearch")
 local selectedMazeSeed: Atom<number> = atom(0)
 local selectedMazeEntranceExitCount: Atom<number> = atom(2)
+local selectedMazeBuildPosition: Atom<string> = atom("Camera")
 
 local actions = {
 	setSelectedMazeWidth = function(width: number)
@@ -53,6 +54,11 @@ local actions = {
 			return entranceExitCount
 		end)
 	end,
+	setSelectedMazeBuildPosition = function(buildPosition: string)
+		selectedMazeBuildPosition(function(_oldBuildPosition: string)
+			return buildPosition
+		end)
+	end,
 }
 
 return {
@@ -66,5 +72,6 @@ return {
 		selectedMazeAlgorithm = selectedMazeAlgorithm,
 		selectedMazeSeed = selectedMazeSeed,
 		selectedMazeEntranceExitCount = selectedMazeEntranceExitCount,
+		selectedMazeBuildPosition = selectedMazeBuildPosition,
 	},
 }

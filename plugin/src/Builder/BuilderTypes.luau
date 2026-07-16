@@ -5,6 +5,7 @@ export type BuilderConfigs = {
 	wallHeight: number,
 	wallThickness: number,
 	floorThickness: number,
+	origin: Vector3?,
 	parent: Instance,
 }
 

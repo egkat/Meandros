@@ -5,6 +5,7 @@ local Builder = require(script.Parent.Parent.Builder)
 local Constants = require(script.Parent.Parent.Data.Constants)
 local MazeGenerator = require(script.Parent.Parent.Generators.MazeGenerator)
 local PluginSettings = require(script.Parent.Parent.PluginSettings)
+local ParseBuildPosition = require(script.Parent.Parent.Utils.ParseBuildPosition)
 
 -- Previews always render the same way regardless of the Appearance settings
 local PREVIEW_MATERIAL = Enum.Material.Plastic
@@ -14,6 +15,9 @@ local BUILD_MODEL_NAME = "Maze"
 
 -- Maximum Number of steps for timelapse reveal.
 local TIMELAPSE_MAX_REVEAL_STEPS = 1000
+
+local CAMERA_RAYCAST_DISTANCE = 5000
+local CAMERA_FALLBACK_DISTANCE = 250
 
 export type MazeSettings = {
 	algorithm: string,
@@ -26,6 +30,7 @@ export type MazeSettings = {
 	material: string,
 	color: Color3,
 	transparency: number,
+	buildPosition: string,
 }
 
 local isBuilding = false
@@ -82,6 +87,50 @@ local function runRecorded(recordingName: string, operation: () -> ())
 	end
 end
 
+
+local function getCameraTargetPosition(): Vector3
+	local camera = workspace.CurrentCamera
+
+	if not camera then
+		return Vector3.zero
+	end
+
+	local cameraCFrame = camera.CFrame
+	local raycastParams = RaycastParams.new()
+	raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+
+	local previewFolder = findPreviewFolder()
+
+	if previewFolder then
+		raycastParams.FilterDescendantsInstances = { previewFolder }
+	end
+
+	local raycastResult =
+		workspace:Raycast(cameraCFrame.Position, cameraCFrame.LookVector * CAMERA_RAYCAST_DISTANCE, raycastParams)
+
+	if raycastResult then
+		return raycastResult.Position
+	end
+
+	return cameraCFrame.Position + cameraCFrame.LookVector * CAMERA_FALLBACK_DISTANCE
+end
+
+
+local function repositionBuildOrigin(settings: MazeSettings): Vector3
+	local buildPosition = ParseBuildPosition(settings.buildPosition)
+	assert(buildPosition, `[MazeService]: invalid build position '{settings.buildPosition}'`)
+
+	local target = if buildPosition == "Camera" then getCameraTargetPosition() else buildPosition
+
+	local centerOffset = Vector3.new(
+		(settings.width - 1) * Constants.DEFAULT_CELL_SIZE / 2,
+		0,
+		(settings.length - 1) * Constants.DEFAULT_CELL_SIZE / 2
+	)
+
+	return target - centerOffset
+end
+
 local function generateMazeParts(settings: MazeSettings, parent: Instance): { BasePart }
 	local gridConfigs = {
 		width = settings.width,
@@ -95,6 +144,7 @@ local function generateMazeParts(settings: MazeSettings, parent: Instance): { Ba
 		wallHeight = settings.wallHeight,
 		wallThickness = settings.wallThickness,
 		floorThickness = settings.floorThickness,
+		origin = repositionBuildOrigin(settings),
 		parent = parent,
 	})
 

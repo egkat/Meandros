@@ -30,6 +30,7 @@ local function getMazeSettings(): MazeService.MazeSettings
 		material = AppearanceSlice.state.selectedPartMaterial(),
 		color = AppearanceSlice.state.selectedPartColor(),
 		transparency = AppearanceSlice.state.selectedPartTransparency(),
+		buildPosition = StructureSlice.state.selectedMazeBuildPosition(),
 	}
 end
 
