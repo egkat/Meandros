@@ -5,7 +5,8 @@ local React = require(script.Parent.Parent.Packages.React)
 
 local DEFAULT_SETTINGS = {
 	randomizeAppearanceOnInit = false,
-	autoPreview = false,
+	timelapse = false,
+	-- autoPreview = false,
 	-- checkForUpdates = false
 }
 

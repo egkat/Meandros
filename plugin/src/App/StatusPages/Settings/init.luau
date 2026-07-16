@@ -101,6 +101,12 @@ local function Settings(props: SettingsProps)
 						description = "Randomizes the Maze Material Color and Transparency when Plugin is opened.",
 						layoutOrder = 1,
 					}),
+					Timelapse = e(Setting, {
+						id = "timelapse",
+						name = "Timelapse",
+						description = "Enables Timelapse Mode, which will slowly build the maze over time.",
+						layoutOrder = 2,
+					}),
 					Layout = e("UIListLayout", {
 						FillDirection = Enum.FillDirection.Vertical,
 						SortOrder = Enum.SortOrder.LayoutOrder,

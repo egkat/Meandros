@@ -4,12 +4,16 @@ local CollectionService = game:GetService("CollectionService")
 local Builder = require(script.Parent.Parent.Builder)
 local Constants = require(script.Parent.Parent.Data.Constants)
 local MazeGenerator = require(script.Parent.Parent.Generators.MazeGenerator)
+local PluginSettings = require(script.Parent.Parent.PluginSettings)
 
 -- Previews always render the same way regardless of the Appearance settings
 local PREVIEW_MATERIAL = Enum.Material.Plastic
 local PREVIEW_COLOR = Color3.fromRGB(163, 162, 165)
 local PREVIEW_TRANSPARENCY = 0.5
 local BUILD_MODEL_NAME = "Maze"
+
+-- Maximum Number of steps for timelapse reveal.
+local TIMELAPSE_MAX_REVEAL_STEPS = 1000
 
 export type MazeSettings = {
 	algorithm: string,
@@ -23,6 +27,8 @@ export type MazeSettings = {
 	color: Color3,
 	transparency: number,
 }
+
+local isBuilding = false
 
 local MazeService = {}
 
@@ -120,21 +126,58 @@ function MazeService.revertPreview()
 end
 
 function MazeService.build(settings: MazeSettings)
-	runRecorded("MeandrosBuildMaze", function()
+
+	if isBuilding then
+		return
+	end
+
+	isBuilding = true
+
+	local success, buildError = pcall(runRecorded, "MeandrosBuildMaze", function()
 		local mazeModel = Instance.new("Model")
 		mazeModel.Name = BUILD_MODEL_NAME
 
-		for _, part in generateMazeParts(settings, mazeModel) do
+		local parts = generateMazeParts(settings, mazeModel)
+
+		for _, part in parts do
 			part.Material = Enum.Material[settings.material]
 			part.Color = settings.color
 			part.Transparency = settings.transparency
 			part.CanCollide = true
 		end
 
+		local isTimelapseMode = PluginSettings:getSetting("timelapse")
+
+		if isTimelapseMode then
+			for _, part in parts do
+				part.Parent = nil
+			end
+		end
+
+		-- Add Timelapse parts to model over time.
 		mazeModel.Parent = workspace
 
 		clearPreviewGeometry()
+
+		if isTimelapseMode then
+			local revealSteps = math.min(#parts, TIMELAPSE_MAX_REVEAL_STEPS)
+			local partsPerStep = math.ceil(#parts / revealSteps)
+
+			for index, part in parts do
+				part.Parent = mazeModel
+
+				if index % partsPerStep == 0 then
+					task.wait()
+				end
+			end
+		end
 	end)
+
+	isBuilding = false
+
+	if not success then
+		error(buildError, 0)
+	end
 end
 
 return MazeService
