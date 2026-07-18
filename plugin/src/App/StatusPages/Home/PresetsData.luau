@@ -27,11 +27,10 @@ PresetsData.Presets = {
 		MazeEntranceExitCount = 2,
 	},
 	[2] = {
-		-- Test Preset
 		PresetName = "Labyrinth",
 		PresetColor = Color3.fromRGB(59, 130, 246),
-		MazeWidth = 50,
-		MazeLength = 40,
+		MazeWidth = 100,
+		MazeLength = 100,
 		MazeHeight = 20,
 		MazeFloorThickness = 2,
 		MazeWallThickness = 3,
