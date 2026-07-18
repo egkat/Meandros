@@ -2,7 +2,6 @@ local PresetsData = {}
 
 export type Preset = {
 	PresetName: string,
-	PresetColor: Color3,
 	MazeWidth: number,
 	MazeLength: number,
 	MazeHeight: number,
@@ -16,7 +15,6 @@ export type Preset = {
 PresetsData.Presets = {
 	[1] = {
 		PresetName = "Default",
-		PresetColor = Color3.fromRGB(112, 112, 112),
 		MazeWidth = 25,
 		MazeLength = 25,
 		MazeHeight = 10,
@@ -28,7 +26,6 @@ PresetsData.Presets = {
 	},
 	[2] = {
 		PresetName = "Labyrinth",
-		PresetColor = Color3.fromRGB(59, 130, 246),
 		MazeWidth = 100,
 		MazeLength = 100,
 		MazeHeight = 20,

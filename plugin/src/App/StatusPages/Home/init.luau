@@ -39,7 +39,8 @@ local function Presets(props: PresetsProps)
 				Size = UDim2.fromScale(1, 1),
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Position = UDim2.fromScale(0.5, 0.5),
-				BackgroundColor3 = PRESET_DATA.PresetColor,
+				BackgroundColor3 = props.currentPreset == PRESET_DATA.PresetName and Color3.fromRGB(59, 130, 246)
+					or Color3.fromRGB(112, 112, 112),
 				BorderSizePixel = 0,
 			}, {
 
@@ -64,8 +65,7 @@ local function Presets(props: PresetsProps)
 				}),
 
 				UIStroke = e("UIStroke", {
-					Color = props.currentPreset == PRESET_DATA.PresetName and Color3.fromRGB(255, 255, 0)
-						or GetInvertedColor(props.theme.Background),
+					Color = GetInvertedColor(props.theme.Background),
 					Thickness = 1,
 				}),
 				UIGradient = e("UIGradient", {
