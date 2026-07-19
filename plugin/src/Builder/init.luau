@@ -52,9 +52,9 @@ end
 
 function Builder.buildFloor(gridConfigs: GridConfigs, builderConfigs: BuilderConfigs, parent: Instance)
 	local size = Vector3.new(
-		gridConfigs.width * builderConfigs.cellSize,
+		gridConfigs.width * builderConfigs.cellSize + builderConfigs.wallThickness,
 		builderConfigs.floorThickness,
-		gridConfigs.height * builderConfigs.cellSize
+		gridConfigs.height * builderConfigs.cellSize + builderConfigs.wallThickness
 	)
 
 	local position = (builderConfigs.origin or Vector3.zero)
