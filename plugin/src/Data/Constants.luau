@@ -30,6 +30,7 @@ Constants.MAZE_ALGORITHMS = {
 	"RandomizedDepthFirstSearch",
 	"RandomizedKruskals",
 	"RandomizedPrims",
+	"RandomizedWilsons",
 }
 
 Constants.MATERIALS = {
