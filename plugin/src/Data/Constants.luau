@@ -20,7 +20,6 @@ Constants.PAGE_COLORS = {
 	SETTINGS = Color3.fromRGB(107, 114, 128),
 }
 
--- Studs per maze cell; corridors are this wide until a cell-size setting exists
 Constants.DEFAULT_CELL_SIZE = 8
 
 Constants.PREVIEW_TAG = "MeandrosPreview"
@@ -28,9 +27,10 @@ Constants.PREVIEW_FOLDER_NAME = "MeandrosPreview"
 
 Constants.MAZE_ALGORITHMS = {
 	"RandomizedDepthFirstSearch",
+	"RandomizedWilsons",
 	"RandomizedKruskals",
 	"RandomizedPrims",
-	"RandomizedWilsons",
+	"RandomizedAldousBroder",
 }
 
 Constants.MATERIALS = {

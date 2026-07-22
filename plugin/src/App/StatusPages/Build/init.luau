@@ -24,6 +24,7 @@ local function getMazeSettings(): MazeService.MazeSettings
 		seed = StructureSlice.state.selectedMazeSeed(),
 		width = StructureSlice.state.selectedMazeWidth(),
 		length = StructureSlice.state.selectedMazeLength(),
+		entranceExitCount = StructureSlice.state.selectedMazeEntranceExitCount(),
 		wallHeight = StructureSlice.state.selectedMazeHeight(),
 		wallThickness = StructureSlice.state.selectedMazeWallThickness(),
 		floorThickness = StructureSlice.state.selectedMazeFloorThickness(),

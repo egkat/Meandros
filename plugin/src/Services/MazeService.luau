@@ -24,6 +24,7 @@ export type MazeSettings = {
 	seed: number | string,
 	width: number,
 	length: number,
+	entranceExitCount: number,
 	wallHeight: number,
 	wallThickness: number,
 	floorThickness: number,
@@ -166,7 +167,7 @@ local function generateMazeParts(settings: MazeSettings, parent: Instance, seed:
 		height = settings.length,
 	}
 
-	local grid = MazeGenerator.generate(settings.algorithm, gridConfigs, seed)
+	local grid = MazeGenerator.generate(settings.algorithm, gridConfigs, seed, settings.entranceExitCount)
 
 	local buildHandle = Builder.build(grid, gridConfigs, {
 		cellSize = Constants.DEFAULT_CELL_SIZE,

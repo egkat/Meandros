@@ -115,6 +115,50 @@ function Grid.getUnvisitedCellNeighbors(grid: { Cell }, configs: GridConfigs, ce
 	return unvisitedCellNeighbors
 end
 
+local BOUNDARY_DIRECTIONS: { { direction: Wall, isBoundary: (Cell, GridConfigs) -> boolean } } = {
+	{ direction = "North", isBoundary = function(cell) return cell.row == 1 end },
+	{ direction = "South", isBoundary = function(cell, configs) return cell.row == configs.height end },
+	{ direction = "West", isBoundary = function(cell) return cell.column == 1 end },
+	{ direction = "East", isBoundary = function(cell, configs) return cell.column == configs.width end },
+}
+
+export type BoundaryWallEntry = { cell: Cell, direction: Wall }
+
+function Grid.getBoundaryWallEntries(grid: { Cell }, configs: GridConfigs): { BoundaryWallEntry }
+	assert(typeof(grid) == "table", `[Grid]: grid must be a table`)
+
+	local boundaryWallEntries = {}
+
+	for _, cell in grid do
+		for _, boundaryDirection in BOUNDARY_DIRECTIONS do
+			if boundaryDirection.isBoundary(cell, configs) then
+				table.insert(boundaryWallEntries, { cell = cell, direction = boundaryDirection.direction })
+			end
+		end
+	end
+
+	return boundaryWallEntries
+end
+
+function Grid.removeBoundaryWall(cell: Cell, direction: Wall)
+	cell.walls[direction] = false
+end
+
+function Grid.carveEntrancesAndExits(grid: { Cell }, configs: GridConfigs, count: number, random: Random)
+	assert(typeof(grid) == "table", `[Grid]: grid must be a table`)
+	assert(typeof(count) == "number", `[Grid]: count must be a number`)
+
+	local boundaryWallEntries = Grid.getBoundaryWallEntries(grid, configs)
+	local openingsToCarve = math.min(count, #boundaryWallEntries)
+
+	for _ = 1, openingsToCarve do
+		local randomIndex = random:NextInteger(1, #boundaryWallEntries)
+		local boundaryWallEntry = table.remove(boundaryWallEntries, randomIndex) :: BoundaryWallEntry
+
+		Grid.removeBoundaryWall(boundaryWallEntry.cell, boundaryWallEntry.direction)
+	end
+end
+
 function Grid.removeWall(cellOne: Cell, cellTwo: Cell, direction: Wall)
 	assert(typeof(cellOne) == "table", `[Grid]: cell one must be a table`)
 	assert(typeof(cellTwo) == "table", `[Grid]: cell two must be a table`)
